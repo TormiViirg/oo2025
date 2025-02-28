@@ -59,7 +59,7 @@ public class SuvaController {
         for (int i = 0; i < suvad.size() - 2; i++) {
             double keskmine = (suvad.get(i).getArvsisend() +
                     suvad.get(i + 1).getArvsisend() +
-                    suvad.get(i + 2).getArvsisend()) / 3;
+                    suvad.get(i + 2).getArvsisend()) / 3.0;
             tulemused.add(keskmine);
         }
         return tulemused;
