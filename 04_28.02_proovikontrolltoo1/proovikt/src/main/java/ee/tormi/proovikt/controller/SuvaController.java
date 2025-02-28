@@ -17,7 +17,7 @@ public class SuvaController {
     SuvaRepository suvaRepository;
 
     @GetMapping("sisestus")
-    public List<Suva> get() {
+    public List<Suva> getSuva() {
         return suvaRepository.findAll();
     }
 
@@ -25,5 +25,30 @@ public class SuvaController {
     public Suva addSuva(@RequestBody Suva suva) {
         return suvaRepository.save(suva);
     }
+
+
+    @GetMapping("summa")
+    public int getSumma() {
+        List<Suva> suvad = suvaRepository.findAll();
+        return suvad.stream().mapToInt(s -> (int) s.getArvsisend()).sum();
+    }
+
+
+    @GetMapping("aritmeetiline")
+    public double getAritmeetiline() {
+        List<Suva> suvad = suvaRepository.findAll();
+        return suvad.stream().mapToDouble(Suva::getArvsisend).average().orElse(0.0);
+    }
+
+    @GetMapping("suurim")
+    public int getSuurim() {
+        List<Suva> suvad = suvaRepository.findAll();
+        return (int) suvad.stream().mapToDouble(Suva::getArvsisend).max().orElse(0.0);
+    }
+
+/*Tee lisaks kolm API otspunkti:
+1) tagastab numbrina kõikide andmebaasis olevate numbrite summa (täisnumber)
+2) tagastab kõikide andmebaasis olevate arvude aritmeetilise keskmise (komakohaga)
+3) tagastab kõige suurema numbri, mis andmebaasis leidub (täisnumber)*/
 
 }
