@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -17,7 +19,11 @@ public class Athlete {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long athleteId;
     private String athleteName;
-    private int countryId;
     private int age;
-    private double resultsId;
+
+    @ManyToOne// sportlane ühest riigist aga ühel riigil mitu sportlast
+    private Country country;
+
+    @OneToMany//Ühel sportlasel võib olla mitu tulemuste komplekti ja seal mitu tulemust
+    private List<Results> results;
 }
