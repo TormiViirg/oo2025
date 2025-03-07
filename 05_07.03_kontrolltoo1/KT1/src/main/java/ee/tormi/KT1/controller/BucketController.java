@@ -3,10 +3,7 @@ package ee.tormi.KT1.controller;
 import ee.tormi.KT1.entity.Bucket;
 import ee.tormi.KT1.repository.BucketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,6 +26,17 @@ public class BucketController {
     @GetMapping("integers")
     public List<Bucket> addInteger() {
         return bucketRepository.findAll();
+    }
+    
+//localhost:8080/converter?number=255&type=hex
+    @GetMapping("converter")
+    public String convertNumber(@RequestParam int number, @RequestParam String type) {
+        return switch (type.toLowerCase()) {
+            case "binary" -> Integer.toBinaryString(number);
+            case "octal" -> Integer.toOctalString(number);
+            case "hex" -> Integer.toHexString(number);
+            default -> "Conversion type not recognized. Supported types are 'binary', 'octal' and 'hex'.";
+        };
     }
 
 }
