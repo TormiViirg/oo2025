@@ -18,7 +18,9 @@ public class BucketController {
         if (bucket.getId() != null) {
             throw new RuntimeException("ERROR_CANNOT_ADD_WITH_ID");
         }
-        //lisa veel üks veateade
+        if (bucket.getNumber() <= 0) {
+            throw new RuntimeException("ERROR_NUMBER_MUST_BE_POSITIVE");
+        }
         bucketRepository.save(bucket);
         return bucketRepository.findAll();
     }
@@ -27,7 +29,7 @@ public class BucketController {
     public List<Bucket> addInteger() {
         return bucketRepository.findAll();
     }
-    
+
 //localhost:8080/converter?number=255&type=hex
     @GetMapping("converter")
     public String convertNumber(@RequestParam int number, @RequestParam String type) {
