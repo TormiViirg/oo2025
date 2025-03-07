@@ -17,6 +17,7 @@ public class CountryController {
 
     @PostMapping("countries")
     public List<Country> addCountries(@RequestBody List<Country> countries) {//list kuna ei viitsi ükshaaval sisestada
+
         countryRepository.saveAll(countries);
         return countryRepository.findAll();
     }

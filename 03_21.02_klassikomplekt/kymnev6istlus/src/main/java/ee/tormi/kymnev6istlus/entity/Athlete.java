@@ -26,4 +26,5 @@ public class Athlete {
 
     @OneToMany//Ühel sportlasel võib olla mitu tulemuste komplekti ja seal mitu tulemust
     private List<Results> results;
+
 }
