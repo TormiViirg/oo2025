@@ -53,7 +53,7 @@ public class ProductController {
         return productRepository.findById(id).orElseThrow();
     }
 
-
+//products?id=4&field=name&value=Aura
     @PatchMapping("products")
     public List<Product> editProductValue(@RequestParam Long id, String field, String value) {
         if (id == null){

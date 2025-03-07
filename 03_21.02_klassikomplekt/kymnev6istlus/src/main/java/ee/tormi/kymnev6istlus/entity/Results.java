@@ -28,5 +28,5 @@ public class Results {
     private int javelin;
     private int thousandFiveHundredMeterRun;
 
-    private float totalScore;
+    private int totalScore;
 }

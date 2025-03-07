@@ -9,16 +9,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-//ei pannud lihtsalt andmebaasi sisse kuna ajad on nagu on :(
 @RestController
 public class CountryController {
+
     @Autowired
-    CountryRepository countryRepository;
+    private CountryRepository countryRepository;
 
     @PostMapping("countries")
-    public List<Country> addCountry(@RequestBody Country country) {
-        countryRepository.save(country);
+    public List<Country> addCountries(@RequestBody List<Country> countries) {//list kuna ei viitsi ükshaaval sisestada
+        countryRepository.saveAll(countries);
         return countryRepository.findAll();
     }
-
 }
+
