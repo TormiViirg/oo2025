@@ -37,8 +37,11 @@ public class AthleteController {
 
     @PostMapping("athlete")
     public List<Athlete> addAthlete(@RequestBody Athlete athlete) {
-        if (athlete.getId() != null) {
-
+        if (athlete.getAthleteId() != null) {
+            throw new RuntimeException("ERROR_CANNOT_ADD_WITH_ID");
+        }
+        if (athlete.getAge() <= 0){
+            throw new RuntimeException("ERROR_AGE_MUST_BE_POSITIVE");
         }
         athleteRepository.save(athlete);
         return athleteRepository.findAll();

@@ -13,9 +13,11 @@ public class ResultsController {
     @Autowired
     ResultsRepository resultsRepository;
 
-    //TODO ära lase siin muuta pärast 1. sisestust
     @PostMapping("results")
     public List<Results> addResult(@RequestBody Results results) {
+        if (results.getId() != null) {
+            throw new RuntimeException("ERROR_CANNOT_ADD_WITH_ID");
+        }
         List<Integer> scores = Arrays.asList(
                 results.getHundredMeterRun(),
                 results.getLongJump(),

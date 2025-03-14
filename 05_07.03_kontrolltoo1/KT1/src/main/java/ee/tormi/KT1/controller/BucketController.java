@@ -31,6 +31,7 @@ public class BucketController {
     }
 
 //localhost:8080/converter?number=255&type=hex
+    //[kshaaval lubatud
     @GetMapping("converter")
     public String convertNumber(@RequestParam int number, @RequestParam String type) {
         return switch (type.toLowerCase()) {
