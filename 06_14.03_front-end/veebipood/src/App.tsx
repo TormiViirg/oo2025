@@ -1,33 +1,81 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useEffect, useState } from 'react'
+//import reactLogo from './assets/react.svg'
+//import viteLogo from '/vite.svg'
 import './App.css'
+import { Category } from './models/Category';
 
 function App() {
   const [count, setCount] = useState(0)
+  const sonad = ["elas", "metsas", "mutionu"];
+  const autod = [
+    {"mark": "BMW", "mudel": "i5", "year": 2015},
+    {"mark": "BMW", "mudel": "TT", "year": 2015},
+    {"mark": "Mercedes", "mudel": "S", "year": 2012},
+    {"mark": "vW", "mudel": "golf", "year": 2018}
+  ];
+
+  const [kategooriad, setKategooriad] = useState<Category[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    fetch("http://localhost:8080/categories")
+    .then(res=>res.json())
+    .then(json => setKategooriad(json))
+  }, []);
+
+  useEffect(() => {
+    fetch("http://localhost:8080/products")
+    .then(res=>res.json())
+    .then(json => setProducts(json))
+  }, []);
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      {/* <>
+            <div>{7 + 7}</div>
+      <div>7 + 7</div>
+      <div>{kogus}</div>
+      <div>{count}</div>
+      </> */}
+      {sonad.map(sona => 
+      <div key = {sona}>
+
+        {sona}
+
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+     )}
+      <br />
+      <br />
+
+      {autod.map(auto =>
+         <div key = {auto.mark + auto.mudel}>
+
+          {auto.mark} - {auto.mudel} ()
+
+         </div>
+        )}
+      <br />
+      <br />
+
+      {kategooriad.map(kategooria =>
+        <div key = {kategooria.id}>
+          {kategooria.name} {kategooria.active}
+
+        </div>
+      )}
+      <br />
+      <br />
+
+      {products.map(product =>
+        <div key={product.id}>
+          <div>{product.id}</div>
+          <div>{product.name}</div>
+          <div>{product.price}</div>
+          <div>{product.image}</div>
+          <div>{product.category?.name}</div>
+        </div>
+      )}
+
     </>
   )
 }
