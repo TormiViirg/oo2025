@@ -4,10 +4,7 @@ import ee.tormi.veebipood.entity.Order;
 import ee.tormi.veebipood.entity.Product;
 import ee.tormi.veebipood.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
 import java.util.List;
@@ -18,6 +15,10 @@ public class OrderController {
     @Autowired
     OrderRepository orderRepository;
 
+    @GetMapping("orders")
+    public List<Order> getOrders() {
+        return orderRepository.findAll();
+    }
     // TODO: Ei tagastataks kõiki tellimusi
     // TODO: Pean võtma front-endist AINULT ID ja mitte usaldama front-endist tulevad toote hinda
     @PostMapping("orders")

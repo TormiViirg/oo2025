@@ -1,81 +1,37 @@
-import { useEffect, useState } from 'react'
+
 //import reactLogo from './assets/react.svg'
 //import viteLogo from '/vite.svg'
 import './App.css'
-import { Category } from './models/Category';
+import { Route, Routes } from 'react-router-dom';
+import MainPage from './pages/MainPage';
+import ManageProducts from './pages/ManageProducts';
+import Arrayd from './pages/Arrayd';
+import Menu from './components/Menu';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import Orders from './pages/Orders';
 
 function App() {
-  const [count, setCount] = useState(0)
-  const sonad = ["elas", "metsas", "mutionu"];
-  const autod = [
-    {"mark": "BMW", "mudel": "i5", "year": 2015},
-    {"mark": "BMW", "mudel": "TT", "year": 2015},
-    {"mark": "Mercedes", "mudel": "S", "year": 2012},
-    {"mark": "vW", "mudel": "golf", "year": 2018}
-  ];
-
-  const [kategooriad, setKategooriad] = useState<Category[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
-
-  useEffect(() => {
-    fetch("http://localhost:8080/categories")
-    .then(res=>res.json())
-    .then(json => setKategooriad(json))
-  }, []);
-
-  useEffect(() => {
-    fetch("http://localhost:8080/products")
-    .then(res=>res.json())
-    .then(json => setProducts(json))
-  }, []);
 
   return (
     <>
-      {/* <>
-            <div>{7 + 7}</div>
-      <div>7 + 7</div>
-      <div>{kogus}</div>
-      <div>{count}</div>
-      </> */}
-      {sonad.map(sona => 
-      <div key = {sona}>
 
-        {sona}
+      <Menu />
 
-      </div>
-     )}
-      <br />
-      <br />
+      {/* Siin routes kohal menüü mis kõigil nähtav */}
+      <Routes>  
+        <Route path="/" element={ <MainPage />} />
+        <Route path="/admin/products" element={ <ManageProducts />} />
 
-      {autod.map(auto =>
-         <div key = {auto.mark + auto.mudel}>
+        <Route path="/arrays" element={ <Arrayd />} />
+        <Route path="/cart" element={ <Cart />} />
+        <Route path="/login" element={ <Login />} />
+        <Route path="/signup" element={ <Signup />} />
+        <Route path="/orders" element={ <Orders />} />
 
-          {auto.mark} - {auto.mudel} ()
-
-         </div>
-        )}
-      <br />
-      <br />
-
-      {kategooriad.map(kategooria =>
-        <div key = {kategooria.id}>
-          {kategooria.name} {kategooria.active}
-
-        </div>
-      )}
-      <br />
-      <br />
-
-      {products.map(product =>
-        <div key={product.id}>
-          <div>{product.id}</div>
-          <div>{product.name}</div>
-          <div>{product.price}</div>
-          <div>{product.image}</div>
-          <div>{product.category?.name}</div>
-        </div>
-      )}
-
+        <Route path="/*" element={ <div>Page not found</div> />} />
+      </Routes>
+      {/* footer */}
     </>
   )
 }
