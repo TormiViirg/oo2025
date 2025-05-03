@@ -5,3 +5,27 @@
   text-align: center;
   width: 100vh;
 }
+
+/* .center{
+  text-align: center;
+} caveman margin auto*/
+table{
+  border: 1px solid #000000;/*style solid*/
+  margin: auto;/*paneb automaatsed marginid height ja width siis pannakse täpselt kesksele, hetkel nkn heigt tabeli kõrgusel, width keskel*/
+}
+
+image{
+  width: 50px;
+  height: 50px;
+}
+
+table img {
+  width: 50px;
+  height: 50px;
+}
+
+.map {
+  height: 300px;
+  margin: 3%;
+  border-radius: 20px;
+}

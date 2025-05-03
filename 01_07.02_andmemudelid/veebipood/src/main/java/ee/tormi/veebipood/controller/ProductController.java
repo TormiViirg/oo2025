@@ -3,8 +3,11 @@ package ee.tormi.veebipood.controller;
 import ee.tormi.veebipood.entity.Product;
 import ee.tormi.veebipood.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:5137")
@@ -75,4 +78,38 @@ public class ProductController {
         productRepository.save(product);
         return productRepository.findAll();
     }
+
+    /*costom repo päring
+    //localhost:8080/category-products?categoryId=1
+    @GetMapping("/category-products")
+    public List<Product> getCategoryProducts(@RequestParam Long categoryId) {
+        List<Product> products = productRepository.findAll();
+        List<Product> filteredProducts = new ArrayList<>();
+        for (Product p: products) {
+            /*
+            for (int i = 0; i < products.size(); i++) {
+                if (products.get(i).getCategory().getId().equals(categoryId)){
+                    filteredProducts.add(products.get(i));
+                }
+            }
+
+            if (p.getCategory().getId().equals(categoryId)) {
+                filteredProducts.add(p);
+            }
+        }
+        return filteredProducts;
+    }
+    */
+//saame küsida millisel lehel oleme
+// localhost:8080/category-products?catagoryId=1page
+    // localhost:8080/category-products?catagoryId=1page
+    @GetMapping("/category-products")
+    public Page<Product> getCategoryProducts(@RequestParam Long categoryId, Pageable pageable) {
+        if (categoryId == -1){
+            return productRepository.findAll(pageable);
+        }
+        return productRepository.findByCategory_Id(categoryId, pageable);
+    }
+
+
 }
