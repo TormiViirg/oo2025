@@ -1,13 +1,13 @@
-package ee.mihkel.veebipood;
+package ee.mihkel.quizlet;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class VeebipoodApplication {
+public class QuizletApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(VeebipoodApplication.class, args);
+		SpringApplication.run(QuizletApplication.class, args);
 	}
 
 }

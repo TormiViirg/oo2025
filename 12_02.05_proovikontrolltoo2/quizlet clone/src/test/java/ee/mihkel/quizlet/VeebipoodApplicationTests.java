@@ -1,4 +1,4 @@
-package ee.mihkel.veebipood;
+package ee.mihkel.quizlet;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
