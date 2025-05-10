@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Word } from '../models/Words';
 
 type Props = {

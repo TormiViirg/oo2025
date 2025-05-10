@@ -4,7 +4,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import { Link } from "react-router-dom";
 import type { Word } from '../models/Words';
 
-
 function ManageWords() {
     
     const [words, setWords] = useState<Word[]>([]);
@@ -44,7 +43,7 @@ function ManageWords() {
 
     return (
         <div>
-            <h2>Manage Words</h2>
+            <h2>Manage Products</h2>
 
             <label>Word</label> <br />
             <input ref={wordRef} type="text" /> <br />
