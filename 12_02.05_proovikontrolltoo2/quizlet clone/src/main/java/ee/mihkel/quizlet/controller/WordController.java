@@ -3,6 +3,8 @@ package ee.mihkel.quizlet.controller;
 import ee.mihkel.quizlet.entity.Word;
 import ee.mihkel.quizlet.repository.WordRepository;
 import lombok.Getter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

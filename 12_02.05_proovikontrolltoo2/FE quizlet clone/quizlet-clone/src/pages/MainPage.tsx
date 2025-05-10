@@ -16,7 +16,7 @@ function MainPage() {
     const [sort, setSort] = useState("id,asc");
 
     useEffect(() => {
-        fetch(`http://localhost:8080/words?page=${page}&sort=${sort}`) 
+        fetch(`http://localhost:8080/words?size=10&page=0&dir=asc`) 
             .then(res => res.json()) 
             .then(json => setWords(json)) 
     }, [page, sort]);

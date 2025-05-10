@@ -4,7 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { Link } from "react-router-dom";
 import type { Word } from '../models/Words';
 
-function ManageWords() {
+function EditWords() {
     
     const [words, setWords] = useState<Word[]>([]);
 
@@ -65,7 +65,7 @@ function ManageWords() {
                     <td>{word.word}</td>
                     <td>{word.definition}</td>
                     <td>
-                        <Link to={"/admin/edit-word/" + word.wordId}>
+                        <Link to={"/admin/words/" + word.wordId}>
                         <button>Edit</button>
                         </Link>
                     </td>
@@ -78,4 +78,4 @@ function ManageWords() {
     );
 }
 
-export default ManageWords;
+export default EditWords;
