@@ -52,29 +52,18 @@ public class WordController {
         return wordRepository.findById(id).orElseThrow();
     }
 
-    @PatchMapping("words")
-    public List<Word> editWordValue(@RequestParam Long id, String field, String value) {
-        if (id == null){
-            throw new IllegalArgumentException("ERROR_CANNOT_EDIT_WITHOUT_ID");
-        }
-        Word word = wordRepository.findById(id).orElseThrow();
-        switch (field) {
-            case "word" -> {
-                if (value == null || value.isBlank()){
-                    throw new IllegalArgumentException("ERROR_WORD_MUST_NOT_BE_BLANK");
-                }
-                word.setWord(value);
-            }
-            case "definition" -> {
-                if (value == null || value.isBlank()){
-                    throw new IllegalArgumentException("ERROR_DEFINITION_MUST_NOT_BE_BLANK");
-                }
-                word.setDefinition(value);
-            }
-            default -> throw new IllegalArgumentException("ERROR_INVALID_FIELD");
-        }
-        wordRepository.save(word);
-        return wordRepository.findAll();
+    @PutMapping("words/{id}")
+    public Word updateWord(@PathVariable Long id, @RequestBody Word updated) {
+        Word word = wordRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Word not found"));
+        if (updated.getWord() == null || updated.getWord().isBlank())
+            throw new RuntimeException("ERROR_WORD_MUST_NOT_BE_BLANK");
+        if (updated.getDefinition() == null || updated.getDefinition().isBlank())
+            throw new RuntimeException("ERROR_DEFINITION_MUST_NOT_BE_BLANK");
+
+        word.setWord(updated.getWord());
+        word.setDefinition(updated.getDefinition());
+        return wordRepository.save(word);
     }
 
     @PostMapping("words/bulk")

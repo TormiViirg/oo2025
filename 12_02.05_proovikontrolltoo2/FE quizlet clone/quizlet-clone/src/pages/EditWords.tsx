@@ -1,81 +1,80 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
+import { ToastContainer, toast } from 'react-toastify'
+import type { Word } from '../models/Words'
 
-import { ToastContainer, toast } from 'react-toastify';
-import { Link } from "react-router-dom";
-import type { Word } from '../models/Words';
+export default function EditWord() {
+  const { wordId } = useParams<{ wordId: string }>()
+  const navigate = useNavigate()
+  const [word, setWord] = useState<string>('')
+  const [definition, setDefinition] = useState<string>('')
 
-function EditWords() {
-    
-    const [words, setWords] = useState<Word[]>([]);
+  useEffect(() => {
+    if (!wordId) return
+    fetch(`http://localhost:8080/words/${wordId}`)
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch word')
+        return res.json()
+      })
+      .then((data: Word) => {
+        setWord(data.word)
+        setDefinition(data.definition)
+      })
+      .catch(err => {
+        console.error(err)
+        toast.error('Could not load word')
+      })
+  }, [wordId])
 
-    useEffect(() => {
-        fetch("http://localhost:8080/words")
-            .then(res=>res.json())
-            .then(json=> setWords(json))
-    }, []);
-
-    const wordRef = useRef<HTMLInputElement>(null);
-    const definitionRef = useRef<HTMLInputElement>(null);
-
-    const addWord = () => {
-
-        const newWord = {
-          word: wordRef.current?.value,
-          definition: definitionRef.current?.value,
-        }
-    
-        fetch(`http://localhost:8080/words`, {
-            method: "POST",
-            body: JSON.stringify(newWord),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        }).then(res=>res.json())
-        .then(json=> {
-            if (json.message === undefined && json.timestamp === undefined && json.status === undefined) {
-                setWords(json);
-                toast.success("New word sucessfully added!");
-            } else {
-                toast.error(json.message);
-            }
-        })
+  const saveChanges = () => {
+    if (!word.trim() || !definition.trim()) {
+      toast.error('Both fields are required.')
+      return
     }
+    fetch(`http://localhost:8080/words/${wordId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ word: word.trim(), definition: definition.trim() }),
+    })
+      .then(res => {
+        if (!res.ok) throw new Error('Update failed')
+        return res.json()
+      })
+      .then(() => {
+        toast.success('Word updated successfully!')
+        navigate('/admin/words')
+      })
+      .catch(err => {
+        console.error(err)
+        toast.error('Error updating word')
+      })
+  }
 
-    return (
-        <div>
-            <h2>Manage Products</h2>
+  return (
+    <div>
+      <h2>Edit Word</h2>
 
-            <label>Word</label> <br />
-            <input ref={wordRef} type="text" /> <br />
-            <label>Definition</label> <br />
-            <input ref={definitionRef} type="text" /> <br />
+      <div>
+        <label>Word</label>
+        <input
+          type="text"
+          value={word}
+          onChange={e => setWord(e.target.value)}
+        />
+      </div>
 
-            <button onClick={() => addWord()}>Add word and definition</button>
+      <div>
+        <label>Definition</label>
+        <input
+          type="text"
+          value={definition}
+          onChange={e => setDefinition(e.target.value)}
+        />
+      </div>
 
-            <table>
-                <thead>
-                <tr>
-                    <th>Word</th>
-                    <th>|Definition</th>
-                </tr>
-                </thead>
-                <tbody>
-                {words.map((word) => (
-                    <tr key={word.wordId}>
-                    <td>{word.word}</td>
-                    <td>{word.definition}</td>
-                    <td>
-                        <Link to={"/admin/words/" + word.wordId}>
-                        <button>Edit</button>
-                        </Link>
-                    </td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
-            <ToastContainer/>
-        </div>
-    );
+      <button onClick={saveChanges}>Save Changes</button>
+
+      <ToastContainer position="bottom-right" autoClose={3000} />
+    </div>
+  )
 }
-
-export default EditWords;

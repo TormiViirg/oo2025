@@ -66,7 +66,7 @@ function ManageWords() {
                     <td>{word.word}</td>
                     <td>{word.definition}</td>
                     <td>
-                        <Link to={"/admin/edit-word/" + word.wordId}>
+                        <Link to={"/admin/words/" + word.wordId}>
                         <button>Edit</button>
                         </Link>
                     </td>
