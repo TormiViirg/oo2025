@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import { Link } from "react-router-dom";
 import type { Word } from '../models/Words';
+import '../components/ManageWords.css';
 
 function ManageWords() {
     

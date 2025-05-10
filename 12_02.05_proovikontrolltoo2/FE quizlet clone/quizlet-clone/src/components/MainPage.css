@@ -1,0 +1,12 @@
+div.movement{
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+div.sort{
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+}

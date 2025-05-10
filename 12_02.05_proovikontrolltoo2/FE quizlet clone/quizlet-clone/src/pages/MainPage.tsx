@@ -1,9 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Link } from 'react-router-dom';
+//import { Link } from 'react-router-dom';
+import WordItem from '../components/WordItem';
 import type { Word } from '../models/Words';
+import '../components/MainPage.css';
+import '../components/MainPage.css';
 
 function MainPage() {
     
+    const [visibleDefinitionId, setVisibleDefinitionId] = useState<number | null>(null);
     const [words, setWords] = useState<Word[]>([]);
     const [totalPages, setTotalPages] = useState(0);
     const [wordsByPage] = useState(10);
@@ -42,25 +46,31 @@ function MainPage() {
 
     return (
         <div>
-
-            <button onClick={() => setSort("name,asc")}>Sort A-Z</button>
-            <button onClick={() => setSort("name,desc")}>Sort Z-A</button>
-
-            {words.map(word => 
-            <div key={word.wordId}>
-                <div>{word.wordId}</div>
-                <div>{word.word}</div>
-                <div>{word.definition}</div>
-                <Link to={"/word/" + word.wordId}>
-                <button>Show definition</button>
-                </Link>
+            <div className='sort'>
+                <button onClick={() => setSort("name,asc")}>Sort A-Z</button>
+                <button onClick={() => setSort("name,desc")}>Sort Z-A</button>
             </div>
-            )}
+            
+            <div className='wordlist'>
+                {words.map(word => (
+                <WordItem
+                    key={word.wordId}
+                    word={word}
+                    isVisible={visibleDefinitionId === word.wordId}
+                    onToggle={() =>
+                    setVisibleDefinitionId(id =>
+                        id === word.wordId ? null : word.wordId
+                    )}
+                />
+                ))}
+            </div>
 
-            <button disabled={page === 0} onClick={() => updatePage(page - 1)}> Previous </button>
-            <span>{page + 1}</span>
-            <button disabled={page >= totalPages - 1} onClick={() => updatePage(page + 1)}> Next </button>
-
+            <div className='movement'>
+                <button disabled={page === 0} onClick={() => updatePage(page - 1)}> Previous </button>
+                <span>{page + 1}</span>
+                <button disabled={page >= totalPages - 1} onClick={() => updatePage(page + 1)}> Next </button>
+            </div>
+            
         </div>
     )
 }
