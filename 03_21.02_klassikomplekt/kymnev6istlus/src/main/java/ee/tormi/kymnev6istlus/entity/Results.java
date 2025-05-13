@@ -15,18 +15,16 @@ import lombok.Setter;
 public class Results {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;//kuna alade arv ei muutu pole vahetabelit vaja, saab eraldi veeru anda ja kui mõni koht tühi siis
-    // see info mille põhjal saab statistikat teha
-    private int hundredMeterRun;
-    private int longJump;
-    private int shotPut;
-    private int highJump;
-    private int fourHundredMeterRun;
-    private int hundredTenMeterHurdle;
-    private int discusThrow;
-    private int poleVault;
-    private int javelin;
-    private int thousandFiveHundredMeterRun;
+    private Long results_id;
 
-    private int totalScore;
+    private Double secondsHundredMeterRun;
+    private Double metersLongJump;
+    private Double metersShotPut;
+    private Double metersHighJump;
+    private Double secondsFourHundredMeterRun;
+    private Double secondsHundredTenMeterHurdle;
+    private Double metersDiscusThrow;
+    private Double metersPoleVault;
+    private Double metersJavelin;
+    private Double secondsThousandFiveHundredMeterRun;
 }

@@ -3,7 +3,6 @@ package ee.tormi.kymnev6istlus.controller;
 import ee.tormi.kymnev6istlus.entity.Country;
 import ee.tormi.kymnev6istlus.repository.CountryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,7 +19,7 @@ public class CountryController {
     @PostMapping("countries")
     public List<Country> addCountries(@RequestBody List<Country> countries) {
         for (Country country : countries) {
-            if (country.getId() != null) {
+            if (country.getCountry_id() != null) {
                 throw new RuntimeException("ERROR_CANNOT_ADD_WITH_ID");
             }
         }
