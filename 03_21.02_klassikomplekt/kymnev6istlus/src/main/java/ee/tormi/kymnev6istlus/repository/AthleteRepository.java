@@ -10,6 +10,9 @@ import java.util.Optional;
 
 public interface AthleteRepository extends JpaRepository<Athlete, Long> {
 
-    @Query("SELECT a FROM Athlete a LEFT JOIN FETCH a.points WHERE a.athleteId = :id")
-    Optional<Athlete> findByIdWithPoints(@Param("id") Long id);
+    @Query("SELECT athlete FROM Athlete athlete LEFT JOIN FETCH athlete.points WHERE athlete.athleteId = :athleteId")
+    Optional<Athlete> findByIdWithPoints(@Param("athleteId") Long athleteId);
+
+    @Query("SELECT DISTINCT athlete FROM Athlete athlete LEFT JOIN FETCH athlete.points")
+    List<Athlete> findAllWithPoints();
 }

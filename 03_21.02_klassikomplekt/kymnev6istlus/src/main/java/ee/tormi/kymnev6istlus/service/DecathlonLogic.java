@@ -16,6 +16,7 @@ public class DecathlonLogic {
         this.pointsRepository = pointsRepository;
     }
 
+
     enum Event {
         HUNDRED_METER_RUN(25.4347, 18,    1.81, true),
         LONG_JUMP(0.14354, 220, 1.40, false),
@@ -114,5 +115,7 @@ public class DecathlonLogic {
                 + points.getJavelin()
                 + points.getThousandFiveHundredMeterRun();
     }
+
+
 
 }

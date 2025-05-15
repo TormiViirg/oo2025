@@ -15,11 +15,10 @@ public class CountryController {
     @Autowired
     private CountryRepository countryRepository;
 
-
     @PostMapping("countries")
     public List<Country> addCountries(@RequestBody List<Country> countries) {
         for (Country country : countries) {
-            if (country.getCountry_id() != null) {
+            if (country.getCountryId() != null) {
                 throw new RuntimeException("ERROR_CANNOT_ADD_WITH_ID");
             }
         }

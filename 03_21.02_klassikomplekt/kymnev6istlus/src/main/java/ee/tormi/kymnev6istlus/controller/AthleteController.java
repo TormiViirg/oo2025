@@ -24,16 +24,15 @@ public class AthleteController {
     AthleteRepository athleteRepository;
     PointsRepository pointsRepository;
 
-
     //kuna ma ei taibanud omal elu lihtsaks teha siis kuna sportlane võib mitmel võistlusel osaleda ja seetõtu mitu resulti
-    @GetMapping("/athletes/{athlete_id}/points")
+    @GetMapping("/athletes/{athleteId}/points")
     public ResponseEntity<List<Map<String, Object>>> getAthletePoints(@PathVariable Long point_id) {
         Athlete athlete = athleteRepository.findByIdWithPoints(point_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Athlete not found"));
 
         List<Map<String, Object>> result = athlete.getPoints().stream()
                 .map(points -> Map.<String,Object>of(
-                        "point_id", points.getPoint_id(),
+                        "point_id", points.getPointId(),
                         "totalScore",   points.getTotalScore()
                 ))
                 .collect(Collectors.toList());
@@ -43,23 +42,42 @@ public class AthleteController {
 
     @PostMapping("athlete")
     public List<Athlete> addAthlete(@RequestBody Athlete athlete) {
-        if (athlete.getAthlete_id() != null) {
+        if (athlete.getAthleteId() != null) {
             throw new RuntimeException("ERROR_CANNOT_ADD_WITH_ID");
         }
         if (athlete.getBirthDate() == null){
-            throw new RuntimeException("ERROR_AGE_MUST_BE_SET");
+            throw new RuntimeException("ERROR_DAY_OF_BIRTH_MUST_BE_SET");
         }
         if (athlete.getAthleteName() != null){
             throw new RuntimeException("ERROR_MUST_ENTER_NAME");
         }
-        if (athlete.getAthleteName() == null){
-            throw new RuntimeException("ERROR_MUST_ENTER_NAME");
+        if (athlete.getLatitudeBirthPlace() == null){
+            throw new RuntimeException("ERROR_MUST_ENTER_LATITUDE");
         }
-        if (athlete.getAthleteName() == null){
-            throw new RuntimeException("ERROR_MUST_ENTER_NAME");
+        if (athlete.getLongitudeBirthPlace() == null){
+            throw new RuntimeException("ERROR_MUST_ENTER_LONGITUDE");
         }
         athleteRepository.save(athlete);
         return athleteRepository.findAll();
+    }
+
+    @GetMapping("/athletes/points")
+    public ResponseEntity<List<Map<String, Object>>> getAllAthletesWithPoints() {
+        List<Athlete> athletes = athleteRepository.findAllWithPoints();
+
+        List<Map<String, Object>> payload = athletes.stream()
+                .map(athlete -> Map.of(
+                        "athleteId",   athlete.getAthleteId(),
+                        "athleteName", athlete.getAthleteName(),
+                        "points",      athlete.getPoints().stream()
+                                .map(points -> Map.of(
+                                        "pointId", points.getPointId(),
+                                        "totalScore",   points.getTotalScore()
+                                ))
+                                .toList()
+                ))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(payload);
     }
 
 

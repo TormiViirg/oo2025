@@ -15,7 +15,7 @@ import lombok.Setter;
 public class Points {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long point_id;
+    private Long pointId;
 
     private Double hundredMeterRun;
     private Double longJump;
@@ -31,6 +31,6 @@ public class Points {
     private Double totalScore;
 
     @ManyToOne (fetch = FetchType.LAZY)
-    @JoinColumn (name = "athlete_id", nullable = false)
+    @JoinColumn (name = "athleteId", nullable = false)
     private Athlete athlete;
 }

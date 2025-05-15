@@ -7,6 +7,7 @@ import ee.tormi.kymnev6istlus.repository.AthleteRepository;
 import ee.tormi.kymnev6istlus.repository.PointsRepository;
 import ee.tormi.kymnev6istlus.repository.ResultsRepository;
 import ee.tormi.kymnev6istlus.service.DecathlonLogic;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +38,8 @@ public class PointsController {
                     "Athlete not found with id " + athleteId
             ));
 
-        for (Results r : resultsList) {
-            if (r.getResults_id() != null) {
+        for (Results results : resultsList) {
+            if (results.getResultsId() != null) {
                 throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Result ID must not be provided when patching in batch"
@@ -67,7 +68,7 @@ public class PointsController {
 
     @PatchMapping("/results")
     public Points editResultValue(
-            @RequestParam("id") Long id,
+            @RequestParam("id") Long id,//resultsId
             @RequestParam("field") String field,
             @RequestParam("value") Double value) {
 
@@ -109,11 +110,11 @@ public class PointsController {
                     throw new ResponseStatusException(
                             HttpStatus.BAD_REQUEST, "Invalid field: " + field);
         }
-        resultsRepository.save(result);
 
-        // 5. Persist and return all
         resultsRepository.save(result);
-        return decathlonLogic.computeSome(result);
+        Points points = decathlonLogic.computeSome(result);
+        pointsRepository.save(points);
+        return points;
     }
 }
 

@@ -19,19 +19,19 @@ import java.util.List;
 public class Athlete {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long athlete_id;
+    private Long athleteId;
     private String athleteName;
     private String bio;
     private LocalDate birthDate;
-    private double latitudeBirthPlace;
-    private double longitudeBirthPlace;
+    private Double latitudeBirthPlace;
+    private Double longitudeBirthPlace;
 
     @ManyToOne (fetch = FetchType.LAZY)
-    @JoinColumn(name = "country_id", nullable = false)// sportlane ühest riigist aga ühel riigil mitu sportlast
+    @JoinColumn(name = "countryId", nullable = false)// sportlane ühest riigist aga ühel riigil mitu sportlast
     private Country country;
 
-    @OneToMany//Ühel sportlasel võib olla mitu tulemuste komplekti ja seal mitu tulemust
-    private Results results;
+    @OneToMany(mappedBy = "athlete", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Results> results = new ArrayList<>();
 
     @OneToMany(mappedBy = "athlete", cascade = CascadeType.ALL, orphanRemoval = true)//Ühel sportlasel võib olla mitu tulemuste komplekti ja sealt tulenevalt mitu selle põhjal arvutatud punktide oma
     private List<Points> points = new ArrayList<>();
