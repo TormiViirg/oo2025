@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -24,12 +26,13 @@ public class Athlete {
     private double latitudeBirthPlace;
     private double longitudeBirthPlace;
 
-    @ManyToOne// sportlane ühest riigist aga ühel riigil mitu sportlast
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn(name = "country_id", nullable = false)// sportlane ühest riigist aga ühel riigil mitu sportlast
     private Country country;
 
     @OneToMany//Ühel sportlasel võib olla mitu tulemuste komplekti ja seal mitu tulemust
     private Results results;
 
-    @OneToMany//Ühel sportlasel võib olla mitu tulemuste komplekti ja sealt tulenevalt mitu selle põhjal arvutatud punktide oma
-    private Points points;
+    @OneToMany(mappedBy = "athlete", cascade = CascadeType.ALL, orphanRemoval = true)//Ühel sportlasel võib olla mitu tulemuste komplekti ja sealt tulenevalt mitu selle põhjal arvutatud punktide oma
+    private List<Points> points = new ArrayList<>();
 }

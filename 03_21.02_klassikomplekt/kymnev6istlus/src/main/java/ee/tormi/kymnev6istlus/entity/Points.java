@@ -29,4 +29,8 @@ public class Points {
     private Double thousandFiveHundredMeterRun;
 
     private Double totalScore;
+
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn (name = "athlete_id", nullable = false)
+    private Athlete athlete;
 }
