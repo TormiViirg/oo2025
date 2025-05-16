@@ -20,6 +20,5 @@ public class ToDo {
     private String title;
     private boolean completed;
 
-    @ManyToOne
-    private User user;
+    private Double user;
 }
