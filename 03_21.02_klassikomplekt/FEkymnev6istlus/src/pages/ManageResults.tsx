@@ -5,12 +5,12 @@ import { Link } from "react-router-dom";
 import type { Athlete } from '../models/Athletes';
 
 
-function ManageAthletes() {
+function ManageResults() {
     
     const [words, setWords] = useState<Athlete[]>([]);
 
     useEffect(() => {
-        fetch("http://localhost:8080/athletes/points")
+        fetch("http://localhost:8080/words")
             .then(res=>res.json())
             .then(json=> setWords(json))
     }, []);
@@ -79,4 +79,4 @@ function ManageAthletes() {
     );
 }
 
-export default ManageAthletes;
+export default ManageResults;

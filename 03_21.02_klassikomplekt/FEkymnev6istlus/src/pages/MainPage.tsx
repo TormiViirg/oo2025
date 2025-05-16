@@ -16,7 +16,7 @@ function MainPage() {
     const [sort, setSort] = useState("id,asc");
 
     useEffect(() => {
-        fetch(`http://localhost:8080/words?size=10&page=0&dir=asc`) 
+        fetch(`http://localhost:8080/athletes/points?size=10&page=0&dir=asc`) 
             .then(res => res.json()) 
             .then(json => setWords(json)) 
     }, [page, sort]);
@@ -47,8 +47,8 @@ function MainPage() {
     return (
         <div>
             <div className='sort'>
-                <button onClick={() => setSort("name,asc")}>Sort A-Z</button>
-                <button onClick={() => setSort("name,desc")}>Sort Z-A</button>
+                <button onClick={() => setSort("country,asc")}>Sort A-Z</button>
+                <button onClick={() => setSort("country,desc")}>Sort Z-A</button>
             </div>
             
             <div className='wordlist'>
