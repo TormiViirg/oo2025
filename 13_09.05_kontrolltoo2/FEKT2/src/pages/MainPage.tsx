@@ -24,7 +24,10 @@ function MainPage() {
                         <div key={todo.id} className="todo-item">
                             <h2>{todo.title}</h2>
                             <p>ID: {todo.id}</p>
-                            <p>{todo.completed ? 'Completed' : 'Pending'}</p>
+                            {/* Status text colored green when completed */}
+                            <p style={{ color: todo.completed ? 'green' : 'inherit' }}>
+                                {todo.completed ? 'Completed' : 'Pending'}
+                            </p>
                         </div>
                         ))}
                     </div>
