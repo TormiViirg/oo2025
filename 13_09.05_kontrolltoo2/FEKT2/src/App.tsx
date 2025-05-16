@@ -1,8 +1,8 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import Menu from './components/Menu'
-import './App.css'
 import { Route, Routes } from 'react-router-dom'
+import './App.css'
+import Menu from './components/Menu'
+import MainPage from './pages/MainPage';
+import ManageToDos from './pages/ManageToDos';
 
 function App() {
 
@@ -11,6 +11,7 @@ function App() {
       <Menu/>
       <Routes>
         <Route path="/" element={ <MainPage /> } />
+        <Route path="/admin/manageToDos" element={ <ManageToDos /> } />
       </Routes>
     </>
   )

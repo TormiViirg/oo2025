@@ -25,7 +25,7 @@ public class ToDoController {
 
     @PostMapping("ToDos")
     public List<ToDo> addToDo(@RequestBody ToDo toDo) {
-        if (toDo.getUser() == null) {
+        if (toDo.getUserId() == null) {
             throw new RuntimeException("ERROR_USER_MUST_ADD_TODO");
         }
         if (toDo.getId() != null) {
@@ -55,9 +55,9 @@ public class ToDoController {
         ToDo toDo = toDoRepository.findById(id).orElseThrow();
         switch (field) {
             case "title" -> toDo.setTitle(value);
-            case "id" -> {
+            /*case "id" -> {
                 throw new RuntimeException("ERROR_CANNOT_CHANGE_CREATOR");
-            }
+            }*/
             case "completed" -> toDo.setCompleted(Boolean.parseBoolean(value));
         }
         toDoRepository.save(toDo);

@@ -20,5 +20,5 @@ public class ToDo {
     private String title;
     private boolean completed;
 
-    private Double user;
+    private Double userId;
 }
