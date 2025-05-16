@@ -5,12 +5,12 @@ import { ToastContainer, toast } from 'react-toastify';
 import type { ToDos } from '../models/ToDos';
 
 
-function ManageWords() {
+function ManageToDos() {
     
     const [toDos, setToDos] = useState<ToDos[]>([]);
 
     useEffect(() => {
-        fetch("http://localhost:8080/todos")
+        fetch("http://localhost:8080/ToDos")
             .then(res=>res.json())
             .then(json=> setToDos(json))
     }, []);
@@ -23,11 +23,11 @@ function ManageWords() {
 
         const newToDo = {
           title: titleRef.current?.value,
-          completed: completedRef.current?.value,
-          user: userRef.current?.value
+          completed: completedRef.current?.checked,
+          userId: userRef.current?.value
         }
     
-        fetch(`http://localhost:8080/toDos`, {
+        fetch(`http://localhost:8080/ToDos`, {
             method: "POST",
             body: JSON.stringify(newToDo),
             headers: {
@@ -51,9 +51,9 @@ function ManageWords() {
             <label>Title:</label> <br />
             <input ref={titleRef} type="text" /> <br />
             <label>Completed</label> <br />
-            <input ref={completedRef} type="boolean" /> <br />
+            <input ref={completedRef} type="checkbox" /> <br />
             <label>userRef</label> <br />
-            <input ref={userRef} type="string" /> <br />
+            <input ref={userRef} type="text" /> <br />
 
             <button onClick={() => addToDo()}>Add Title, status, and creator</button>
 
@@ -84,4 +84,4 @@ function ManageWords() {
     );
 }
 
-export default ManageWords;
+export default ManageToDos;

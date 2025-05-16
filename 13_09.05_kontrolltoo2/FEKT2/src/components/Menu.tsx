@@ -11,12 +11,12 @@ function Menu() {
 
         <Navbar.Brand as={Link} to="/">MainPage</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        
+
         <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="me-auto">
                 
             <NavDropdown title="Admin" id="collapsible-nav-dropdown">
-                <NavDropdown.Item as={Link} to="/admin/words">Manage Products</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/admin/manageToDos">Manage ToDos</NavDropdown.Item>
             </NavDropdown>
 
             </Nav>

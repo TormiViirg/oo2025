@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react'
 //import { Link } from 'react-router-dom'
 import type { ToDos } from '../models/ToDos';
-import '../components/Menu.css';
+import '../components/Menu.tsx';
 
 function MainPage() {
     
     const [toDos, setToDos] = useState<ToDos[]>([]);
 
     useEffect(() => {
-        fetch(`http://localhost:8080/toDos`) 
+        fetch(`http://localhost:8080/ToDos`) 
             .then(res => res.json()) 
             .then(json => setToDos(json)) 
     }, []);

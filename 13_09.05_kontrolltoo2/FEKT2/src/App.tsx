@@ -10,7 +10,7 @@ function App() {
     <>
       <Menu/>
       <Routes>
-        <Route path="/" element={ <MainPage /> } />
+        <Route path="/ToDos" element={ <MainPage /> } />
         <Route path="/admin/manageToDos" element={ <ManageToDos /> } />
       </Routes>
     </>

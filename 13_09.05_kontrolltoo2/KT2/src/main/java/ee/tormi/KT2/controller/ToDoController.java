@@ -11,19 +11,30 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:5137")
+@CrossOrigin(
+        origins        = "http://localhost:5173",
+        allowedHeaders = "*",
+        methods        = {
+                RequestMethod.GET,
+                RequestMethod.POST,
+                RequestMethod.PATCH,
+                RequestMethod.DELETE,
+                RequestMethod.OPTIONS
+        }
+)
+@RequestMapping("/ToDos")
 @RestController
 public class ToDoController {
 
     @Autowired
     ToDoRepository toDoRepository;
 
-    @GetMapping("ToDos")
+    @GetMapping
     public List<ToDo> getToDos() {
         return toDoRepository.findAll();// praegu andmebaasist tühi list select all from extentds JpaRepostory<Product
     }
 
-    @PostMapping("ToDos")
+    @PostMapping
     public List<ToDo> addToDo(@RequestBody ToDo toDo) {
         if (toDo.getUserId() == null) {
             throw new RuntimeException("ERROR_USER_MUST_ADD_TODO");
@@ -35,19 +46,19 @@ public class ToDoController {
         return toDoRepository.findAll();
     }
 
-    @DeleteMapping("ToDos/{id}")
+    @DeleteMapping("/{id}")
     public List<ToDo> deleteToDo(@PathVariable Long id) {
         toDoRepository.deleteById(id);
         return toDoRepository.findAll();
     }
 
-    @GetMapping("ToDos/{id}")
+    @GetMapping("/{id}")
     public ToDo getToDo(@PathVariable Long id) {
         return toDoRepository.findById(id).orElseThrow();
     }
 
     //products?id=4&field=name&value=Aura
-    @PatchMapping("toDos")
+    @PatchMapping
     public List<ToDo> editProductValue(@RequestParam Long id, String field, String value) {
         if (id == null) {
             throw new RuntimeException("ERROR_CANNOT_EDIT_WITHOUT_ID");

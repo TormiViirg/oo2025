@@ -15,7 +15,7 @@ import lombok.Setter;
 public class ToDo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Double id;
+    private Long id;
 
     private String title;
     private boolean completed;
