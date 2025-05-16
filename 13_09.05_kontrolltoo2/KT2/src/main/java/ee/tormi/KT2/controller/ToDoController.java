@@ -30,8 +30,13 @@ public class ToDoController {
     ToDoRepository toDoRepository;
 
     @GetMapping
-    public List<ToDo> getToDos() {
-        return toDoRepository.findAll();// praegu andmebaasist tühi list select all from extentds JpaRepostory<Product
+    public List<ToDo> getToDos(
+            @RequestParam(value = "title", required = false) String title
+    ) {
+        if (title != null && !title.isBlank()) {
+            return toDoRepository.findByTitleContainingIgnoreCase(title);
+        }
+        return toDoRepository.findAll();
     }
 
     @PostMapping
