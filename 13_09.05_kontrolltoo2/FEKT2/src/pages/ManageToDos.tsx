@@ -24,7 +24,7 @@ function ManageToDos() {
         const newToDo = {
           title: titleRef.current?.value,
           completed: completedRef.current?.checked,
-          userId: userRef.current?.value
+          userId: Number(userRef.current?.value)
         }
     
         fetch(`http://localhost:8080/ToDos`, {
@@ -35,9 +35,10 @@ function ManageToDos() {
             }
         }).then(res=>res.json())
         .then(json=> {
-            if (json.message === undefined && json.timestamp === undefined && json.status === undefined) {
-                setToDos(json);
-                toast.success("New word sucessfully added!");
+            if (!json.message && !json.timestamp && !json.status) {
+                // assuming API returns updated list
+                setToDos(Array.isArray(json) ? json : [...toDos, json])
+                toast.success('New ToDo successfully added!')
             } else {
                 toast.error(json.message);
             }
@@ -48,14 +49,16 @@ function ManageToDos() {
         <div>
             <h2>Manage ToDos</h2>
 
-            <label>Title:</label> <br />
-            <input ref={titleRef} type="text" /> <br />
-            <label>Completed</label> <br />
-            <input ref={completedRef} type="checkbox" /> <br />
-            <label>userRef</label> <br />
-            <input ref={userRef} type="text" /> <br />
+        <label htmlFor="title">Title:</label><br />
+        <input id="title" ref={titleRef} type="text" /><br />
 
-            <button onClick={() => addToDo()}>Add Title, status, and creator</button>
+        <label htmlFor="completed">Completed:</label><br />
+        <input id="completed" ref={completedRef} type="checkbox" /><br />
+
+        <label htmlFor="userId">Creator (User ID):</label><br />
+        <input id="userId" ref={userRef} type="number" /><br />
+
+        <button onClick={addToDo}>Add ToDo</button>
 
             <table>
                 <thead>
