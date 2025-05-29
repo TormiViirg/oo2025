@@ -7,7 +7,7 @@ export type Athlete = {
     athleteName: string,
     bio: string,
     birthDate: Date,
-    latidudeBirthPlace: number,
+    latitudeBirthPlace: number,
     longitudeBirthPlace: number,
 
     country: Country,

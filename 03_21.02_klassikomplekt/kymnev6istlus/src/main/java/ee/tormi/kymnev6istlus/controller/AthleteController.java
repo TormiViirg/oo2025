@@ -25,31 +25,37 @@ public class AthleteController {
     PointsRepository pointsRepository;
 
     //kuna ma ei taibanud omal elu lihtsaks teha siis kuna sportlane võib mitmel võistlusel osaleda ja seetõtu mitu resulti
-    @GetMapping("/athletes/{athleteId}/points")
-    public ResponseEntity<List<Map<String, Object>>> getAthletePoints(@PathVariable Long point_id) {
-        Athlete athlete = athleteRepository.findByIdWithPoints(point_id)
+    @GetMapping("/athletes/overview/{athleteId}")
+    public ResponseEntity<List<Map<String, Object>>> getAthletePoints(@PathVariable("athleteId") Long athleteId) {
+        Athlete athlete = athleteRepository.findByIdWithPoints(athleteId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Athlete not found"));
 
         List<Map<String, Object>> result = athlete.getPoints().stream()
-                .map(points -> Map.<String,Object>of(
-                        "point_id", points.getPointId(),
-                        "totalScore",   points.getTotalScore()
+                .map(p -> Map.<String, Object>of(
+                        "point_id",    p.getPointId(),
+                        "totalScore",  p.getTotalScore(),
+                        "athleteName", athlete.getAthleteName(),
+                        "country",     athlete.getCountry().getCountryName()
                 ))
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(result);
     }
 
+    // Võimalda salvestada sportlane: nimi, riik, vanus.
     @PostMapping("athlete")
     public List<Athlete> addAthlete(@RequestBody Athlete athlete) {
         if (athlete.getAthleteId() != null) {
             throw new RuntimeException("ERROR_CANNOT_ADD_WITH_ID");
         }
-        if (athlete.getBirthDate() == null){
-            throw new RuntimeException("ERROR_DAY_OF_BIRTH_MUST_BE_SET");
-        }
-        if (athlete.getAthleteName() != null){
+        if (athlete.getAthleteName() == null){
             throw new RuntimeException("ERROR_MUST_ENTER_NAME");
+        }
+        if (athlete.getBio() == null){
+            throw new RuntimeException("ERROR_MUST_ENTER_BIO");
+        }
+        if (athlete.getBirthDate() == null){
+            throw new RuntimeException("ERROR_MUST_ENTER_BIRTHDATE");
         }
         if (athlete.getLatitudeBirthPlace() == null){
             throw new RuntimeException("ERROR_MUST_ENTER_LATITUDE");

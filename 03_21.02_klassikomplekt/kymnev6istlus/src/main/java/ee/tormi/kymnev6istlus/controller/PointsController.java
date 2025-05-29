@@ -68,9 +68,9 @@ public class PointsController {
 
     @PatchMapping("/results")
     public Points editResultValue(
-            @RequestParam("id") Long id,//resultsId
-            @RequestParam("field") String field,
-            @RequestParam("value") Double value) {
+        @RequestParam("id") Long id,//resultsId
+        @RequestParam("field") String field,
+        @RequestParam("value") Double value) {
 
         Results result = resultsRepository.findById(id)
             .orElseThrow(() -> new ResponseStatusException(

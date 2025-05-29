@@ -1,74 +1,101 @@
 import { useCallback, useEffect, useState } from 'react'
-//import { Link } from 'react-router-dom';
-import WordItem from '../components/WordItem';
+import { Link } from 'react-router-dom';
+import AthleteDetails from '../components/AthleteDetails';
 import type { Athlete } from '../models/Athletes';
-import '../components/MainPage.css';
+import type { Country } from '../models/Country';
 import '../components/MainPage.css';
 
 function MainPage() {
     
-    const [visibleDefinitionId, setVisibleDefinitionId] = useState<number | null>(null);
-    const [words, setWords] = useState<Athlete[]>([]);
-    const [totalPages, setTotalPages] = useState(0);
-    const [wordsByPage] = useState(10);
+    const [athletes, setAthletes] = useState<Athlete[]>([]);
+    const [countryList, setCountryList] = useState<Country[]>([]);
+
+    const [activeCountry, setActiveCountry] = useState<number>(-1);
+    const [visibleDetailsId, setVisibleDetailsId] = useState<number | null>(null);
+    
+    const [athletesByPage] = useState(10);
     const [page, setPage] = useState(0);
-    const [activeWord, setActiveWord] = useState(-1);
-    const [sort, setSort] = useState("id,asc");
+    const [totalPages, setTotalPages] = useState(0);
 
     useEffect(() => {
-        fetch(`http://localhost:8080/athletes/points?size=10&page=0&dir=asc`) 
-            .then(res => res.json()) 
-            .then(json => setWords(json)) 
-    }, [page, sort]);
+        fetch('http://localhost:8080/countries')
+            .then(res => res.json())
+            .then(json => setCountryList(json))
+    }, []);
 
-    const showByWord = useCallback((wordId: number, page: number) => {
-        setActiveWord(wordId);
-        setPage(page);
-        fetch("http://localhost:8080/word-definitions?wordId=" + wordId + 
-          "&size=" + wordsByPage +
-          "&page=" + page +
-          "&sort=" + sort
+    const showByCountry = useCallback((countryId: number, currentPage: number) => {
+        setActiveCountry(countryId);
+        setPage(currentPage);
+        fetch("http://localhost:8080/athletes/overview/" + countryId + 
+          "&size=" + athletesByPage +
+          "&page=" + currentPage
         )
-        .then(res=>res.json()) 
-        .then(json=> {
-            setWords(json.content);
+        .then(res => res.json()) 
+        .then(json => {
+            setAthletes(json.content);
             setTotalPages(json.totalPages);
         }) 
-    }, [wordsByPage, sort, setPage]);
+    }, [athletesByPage]);
     
     useEffect(() => {
-        showByWord(activeWord, 0);
-    }, [showByWord, activeWord]);
+        if (activeCountry >= 0){
+            showByCountry(activeCountry, 0)
+        }
+    }, [showByCountry, activeCountry]);
 
     function updatePage(newPage: number) {
-        showByWord(activeWord, newPage);
+        showByCountry(activeCountry, newPage);
     }
 
     return (
         <div>
-            <div className='sort'>
-                <button onClick={() => setSort("country,asc")}>Sort A-Z</button>
-                <button onClick={() => setSort("country,desc")}>Sort Z-A</button>
+            <div>
+                <label htmlFor="country-dropdown"> Select Country: </label>
+                <select 
+                    id="country-dropdown"
+                    value={activeCountry}
+                    onChange={e => showByCountry(Number(e.target.value), 0)}
+                >
+                    <option value = {-1} disabled>
+                        -- Choose a Country --
+                    </option>
+                    {countryList.map(country => (
+                        <option key = {country.countryId} value={country.countryId}>
+                            {country.countryName}
+                        </option>
+                    ))}
+                </select>
             </div>
-            
-            <div className='wordlist'>
-                {words.map(word => (
-                <WordItem
-                    key={word.wordId}
-                    word={word}
-                    isVisible={visibleDefinitionId === word.wordId}
-                    onToggle={() =>
-                    setVisibleDefinitionId(id =>
-                        id === word.wordId ? null : word.wordId
-                    )}
-                />
+
+            <div className='resultpointlist'>
+                {athletes.map(athlete => (
+                    <div key = {athlete.athleteId} className="athlete-entry">
+                        <AthleteDetails
+                            athlete = {athlete}
+                            isVisible = {visibleDetailsId === athlete.athleteId}
+                            onToggle = {() =>
+                                setVisibleDetailsId(current => 
+                                    current === athlete.athleteId ? null : athlete.athleteId
+                                )
+                            }
+                        />
+                        {athlete.athleteId > 0 && (
+                            <Link to = {`/admin/addAthleteResults:${athlete.athleteId}`} >
+                                <button>Add results</button>
+                            </Link>
+                        )}
+                    </div>
                 ))}
             </div>
 
             <div className='movement'>
-                <button disabled={page === 0} onClick={() => updatePage(page - 1)}> Previous </button>
+                <button disabled = { page === 0 } onClick={() => updatePage( page - 1 )}>
+                    Previous 
+                </button>
                 <span>{page + 1}</span>
-                <button disabled={page >= totalPages - 1} onClick={() => updatePage(page + 1)}> Next </button>
+                <button disabled={page >= totalPages - 1} onClick={() => updatePage(page + 1)}>
+                    Next 
+                </button>
             </div>
             
         </div>

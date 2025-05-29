@@ -1,8 +1,10 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
 import Menu from './components/Menu'
 import './App.css'
 import { Route, Routes } from 'react-router-dom'
+import MainPage from './pages/MainPage'
+import ManageAthletes from './pages/ManageAthlete'
+import EditAthleteDetails from './pages/EditAthleteDetails'
+import Map from './pages/Map'
 
 function App() {
 
@@ -11,6 +13,11 @@ function App() {
       <Menu/>
       <Routes>
         <Route path="/" element={ <MainPage /> } />
+        <Route path="/*" element={ <div>Page not found</div> } />
+        <Route path="/map" element={ <Map /> } />
+
+        <Route path="/admin/addAthlete" element={ <ManageAthletes /> } />
+        <Route path="/admin/addAthleteResults:athleteId" element={ <EditAthleteDetails /> } />
       </Routes>
     </>
   )
