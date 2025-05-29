@@ -36,39 +36,48 @@ function ManageAthletes() {
             .then(json => setCountryList(json))
     }, []);
 
-    const addAthlete = () => {
-    const newAthlete = {
-        athleteName: nameRef.current?.value ?? "",
-        bio: bioRef.current?.value ?? "",
-        birthDate: birthDateRef.current?.value ?? "",               
-        latitudeBirthPlace: Number(latRef.current?.value) || 0,
-        longitudeBirthPlace: Number(lonRef.current?.value) || 0,
-        country: { id: Number(countryRef.current?.value) }
-    };
+    const addAthlete = (e?: React.FormEvent) => {
+        e?.preventDefault();
+        const newAthlete = {
+            athleteName: nameRef.current?.value ?? "",
+            bio: bioRef.current?.value ?? "",
+            birthDate: birthDateRef.current?.value ?? "",               
+            latitudeBirthPlace: Number(latRef.current?.value) || 0,
+            longitudeBirthPlace: Number(lonRef.current?.value) || 0,
+            country: { id: Number(countryRef.current?.value) }
+        };
 
-    fetch("http://localhost:8080/athlete", {
-        method:  "POST",
-        headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify(newAthlete),
-    })
+        fetch("http://localhost:8080/athlete", {
+            method:  "POST",
+            headers: { "Content-Type": "application/json" },
+            body:    JSON.stringify(newAthlete),
+        })
         .then(res => res.json())
         .then(json => {
-        if (!json.status) {
-            setAthlete({
-                ...json,
-                birthDate: new Date(json.birthDate)
-            });
-            toast.success("New Athlete successfully added!");
-        } else {
-            toast.error(json.message);
-        }
+            if (!json.status) {
+                setAthlete({
+                    ...json,
+                    birthDate: new Date(json.birthDate)
+                });
+                toast.success("New Athlete successfully added!");
+            } else {
+                toast.error(json.message);
+            }
         })
         .catch(err => toast.error(err.message));
     };
 
     return (
         <div>
-            <table>
+            <form
+                onSubmit={addAthlete}
+                style={{
+                    display: "grid",
+                    gridTemplateColumns: "max-content 1fr",
+                    gap: "0.5rem 1rem",
+                    alignItems: "center"
+                }}
+            >
                 <label>Name</label> <br />
                 <input 
                     ref={nameRef} 
@@ -107,17 +116,19 @@ function ManageAthletes() {
                 /> <br />
 
                 <label>Country</label> <br />
-                <select ref={countryRef} defaultValue={String(athlete.country.countryId)}>
-                {countryList.map(country => (
-                    <option key={country.countryId} value={country.countryId}>
-                        {country.countryName}
-                    </option>
-                ))}
+                <select 
+                    ref={countryRef} 
+                    defaultValue={String(athlete.country.countryId)}
+                >
+                    {countryList.map(country => (
+                        <option key={country.countryId} value={country.countryId}>
+                            {country.countryName}
+                        </option>
+                    ))}
                 </select>
-                <br />
-
-                <button onClick={() => addAthlete()}>Add athlete</button>
-            </table>
+                <div></div>
+                <button type="submit">Add athlete</button>
+            </form>
 
             {athlete.athleteId > 0 && (
                 <Link to = {`/admin/addAthleteResults:${athlete.athleteId}`} >

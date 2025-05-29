@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import AthleteDetails from '../components/AthleteDetails';
 import type { Athlete } from '../models/Athletes';
 import type { Country } from '../models/Country';
-import '../components/MainPage.css';
+//import '../components/MainPage.css';
 
 function MainPage() {
     
