@@ -38,13 +38,15 @@ function ManageAthletes() {
 
     const addAthlete = (e?: React.FormEvent) => {
         e?.preventDefault();
+        const selectedCountryId = Number(countryRef.current?.value);
+
         const newAthlete = {
             athleteName: nameRef.current?.value ?? "",
             bio: bioRef.current?.value ?? "",
             birthDate: birthDateRef.current?.value ?? "",               
             latitudeBirthPlace: Number(latRef.current?.value) || 0,
             longitudeBirthPlace: Number(lonRef.current?.value) || 0,
-            country: { id: Number(countryRef.current?.value) }
+            country: { countryId: Number(countryRef.current?.value) }
         };
 
         fetch("http://localhost:8080/athlete", {
@@ -55,9 +57,21 @@ function ManageAthletes() {
         .then(res => res.json())
         .then(json => {
             if (!json.status) {
+                const createdAthlete = (json as Athlete[]).find(
+                    (a: Athlete) => a.athleteName === newAthlete.athleteName
+                );
+                if (!createdAthlete) {
+                    toast.error("Newly created athlete not found.");
+                    return;
+                }
+                const matchedCountry = countryList.find(c => c.countryId === selectedCountryId) ?? {
+                    countryId: selectedCountryId,
+                    countryName: ""
+                };
                 setAthlete({
-                    ...json,
-                    birthDate: new Date(json.birthDate)
+                    ...createdAthlete,
+                    country: matchedCountry,
+                    birthDate: new Date(createdAthlete.birthDate)
                 });
                 toast.success("New Athlete successfully added!");
             } else {
@@ -65,6 +79,12 @@ function ManageAthletes() {
             }
         })
         .catch(err => toast.error(err.message));
+    };
+
+    const formatDateInput = (date: Date) => {
+        return date instanceof Date && !isNaN(date.getTime())
+        ? date.toISOString().slice(0, 10)
+        : "";
     };
 
     return (
@@ -93,10 +113,10 @@ function ManageAthletes() {
                 /> <br />
 
                 <label>Birth Date</label> <br />
-                <input 
+                <input
                     ref={birthDateRef} 
-                    type = "date" 
-                    defaultValue={athlete.birthDate.toISOString().split('T')[0]}
+                    type="date"
+                    defaultValue={formatDateInput(athlete.birthDate)}
                 /> <br />
 
                 <label>Latitude of BirthPlace</label> <br />

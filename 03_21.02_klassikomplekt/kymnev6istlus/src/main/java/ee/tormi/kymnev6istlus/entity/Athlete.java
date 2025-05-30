@@ -1,5 +1,6 @@
 package ee.tormi.kymnev6istlus.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,11 +16,13 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 
 public class Athlete {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long athleteId;
+
     private String athleteName;
     private String bio;
     private LocalDate birthDate;

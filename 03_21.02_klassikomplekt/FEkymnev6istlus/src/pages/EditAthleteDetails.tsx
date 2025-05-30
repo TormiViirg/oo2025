@@ -33,7 +33,7 @@ function EditAthlete() {
 
     useEffect(() => {
         if (!athleteId) return;
-        fetch(`http://localhost:8080/athletes/${athleteId}`)
+        fetch(`http://localhost:8080/everything/athletes/${athleteId}`)
             .then(res => res.json())
             .then((json: Athlete & { results: Results[]; points: Points[] }) => {
                 setAthlete(json);
@@ -73,7 +73,7 @@ function EditAthlete() {
             results: updatedResults
         };
 
-        fetch("http://localhost:8080/athletes", {
+        fetch(`http://localhost:8080/results/batch/${athleteId}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
@@ -85,7 +85,7 @@ function EditAthlete() {
             if (json.message && json.timestamp && json.status) {
                 toast.error(json.message);
             } else {
-                fetch(`http://localhost:8080/athletes/${athleteId}/points`)
+                fetch(`http://localhost:8080/everything/athletes/${athleteId}`)
                 .then(res => res.json())
                 .then((pts: Points[]) => {
                     setPoints(pts);

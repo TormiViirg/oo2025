@@ -19,7 +19,7 @@ function Menu() {
                     <Nav.Link as={Link} to="/map">{t('nav.map')}</Nav.Link>
 
                     <NavDropdown title="Admin" id="collapsible-nav-dropdown">
-                        <NavDropdown.Item as={Link} to="/admin/athletes">{t('admin-nav.athletes')}</NavDropdown.Item>
+                        <NavDropdown.Item as={Link} to="/admin/addAthlete">{t('admin-nav.athletes')}</NavDropdown.Item>
                     </NavDropdown>
                 </Nav>
 

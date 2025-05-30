@@ -68,24 +68,64 @@ public class AthleteController {
         return athleteRepository.findAll();
     }
 
-    @GetMapping("/athletes/points")
-    public ResponseEntity<List<Map<String, Object>>> getAllAthletesWithPoints() {
-        List<Athlete> athletes = athleteRepository.findAllWithPoints();
+    @GetMapping("/athletes/{athleteId}/everything")
+    public ResponseEntity<Map<String, Object>> getAthleteWithPoints(@PathVariable Long athleteId) {
+        return athleteRepository
+        .findByIdEverything(athleteId)
+        .map(athlete -> {
 
-        List<Map<String, Object>> payload = athletes.stream()
-                .map(athlete -> Map.of(
-                        "athleteId",   athlete.getAthleteId(),
-                        "athleteName", athlete.getAthleteName(),
-                        "points",      athlete.getPoints().stream()
-                                .map(points -> Map.of(
-                                        "pointId", points.getPointId(),
-                                        "totalScore",   points.getTotalScore()
-                                ))
-                                .toList()
-                ))
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(payload);
+            List<Map<String, Object>> resultsList = athlete.getResults().stream()
+                    .map(r -> Map.<String, Object>ofEntries(
+                            Map.entry("resultsId", r.getResultsId()),
+                            Map.entry("secondsHundredMeterRun", r.getSecondsHundredMeterRun()),
+                            Map.entry("metersLongJump", r.getMetersLongJump()),
+                            Map.entry("metersShotPut", r.getMetersShotPut()),
+                            Map.entry("metersHighJump", r.getMetersHighJump()),
+                            Map.entry("secondsFourHundredMeterRun", r.getSecondsFourHundredMeterRun()),
+                            Map.entry("secondsHundredTenMeterHurdle", r.getSecondsHundredTenMeterHurdle()),
+                            Map.entry("metersDiscusThrow", r.getMetersDiscusThrow()),
+                            Map.entry("metersPoleVault", r.getMetersPoleVault()),
+                            Map.entry("metersJavelin", r.getMetersJavelin()),
+                            Map.entry("secondsThousandFiveHundredMeterRun", r.getSecondsThousandFiveHundredMeterRun())
+                    ))
+                    .toList();
+
+            List<Map<String, Object>> pointsList = athlete.getPoints().stream()
+                    .map(p -> Map.<String, Object>ofEntries(
+                            Map.entry("pointId", p.getPointId()),
+                            Map.entry("hundredMeterRun", p.getHundredMeterRun()),
+                            Map.entry("longJump", p.getLongJump()),
+                            Map.entry("shotPut", p.getShotPut()),
+                            Map.entry("highJump", p.getHighJump()),
+                            Map.entry("fourHundredMeterRun", p.getFourHundredMeterRun()),
+                            Map.entry("hundredTenMeterHurdle", p.getHundredTenMeterHurdle()),
+                            Map.entry("discusThrow", p.getDiscusThrow()),
+                            Map.entry("poleVault", p.getPoleVault()),
+                            Map.entry("javelin", p.getJavelin()),
+                            Map.entry("thousandFiveHundredMeterRun", p.getThousandFiveHundredMeterRun()),
+                            Map.entry("totalScore", p.getTotalScore())
+                    ))
+                    .toList();
+
+            Map<String, Object> countryMap = Map.of(
+                    "countryId",   athlete.getCountry().getCountryId(),
+                    "countryName", athlete.getCountry().getCountryName()
+            );
+
+            Map<String, Object> payload = Map.<String, Object>ofEntries(
+                    Map.entry("athleteId", athlete.getAthleteId()),
+                    Map.entry("athleteName", athlete.getAthleteName()),
+                    Map.entry("bio", athlete.getBio()),
+                    Map.entry("birthDate", athlete.getBirthDate()),
+                    Map.entry("latitudeBirthPlace", athlete.getLatitudeBirthPlace()),
+                    Map.entry("longitudeBirthPlace", athlete.getLongitudeBirthPlace()),
+                    Map.entry("results", resultsList),
+                    Map.entry("points", pointsList),
+                    Map.entry("country", countryMap)
+            );
+
+            return ResponseEntity.ok(payload);
+        })
+        .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
-
 }

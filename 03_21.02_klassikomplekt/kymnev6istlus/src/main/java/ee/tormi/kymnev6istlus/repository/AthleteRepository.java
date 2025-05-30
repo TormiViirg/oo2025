@@ -15,4 +15,14 @@ public interface AthleteRepository extends JpaRepository<Athlete, Long> {
 
     @Query("SELECT DISTINCT athlete FROM Athlete athlete LEFT JOIN FETCH athlete.points")
     List<Athlete> findAllWithPoints();
+
+    @Query("""
+        SELECT a
+        FROM Athlete a
+        LEFT JOIN FETCH a.results r
+        LEFT JOIN FETCH a.points  p
+        LEFT JOIN FETCH a.country c
+        WHERE a.athleteId = :id
+    """)
+    Optional<Athlete> findByIdEverything(@Param("id") Long id);
 }

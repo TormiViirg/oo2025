@@ -22,7 +22,7 @@ const resources = {
   et: {
     translation: {
       "nav": {
-        "page-name": "Ülevaade",
+        "overview": "Ülevaade",
         "map": "Sportlaste kasvukohad"
       },
       "home": {
