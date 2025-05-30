@@ -68,7 +68,7 @@ public class AthleteController {
         return athleteRepository.findAll();
     }
 
-    @GetMapping("/athletes/{athleteId}/everything")
+    @GetMapping("/everything/athletes/{athleteId}")
     public ResponseEntity<Map<String, Object>> getAthleteWithPoints(@PathVariable Long athleteId) {
         return athleteRepository
         .findByIdEverything(athleteId)

@@ -1,10 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { Athlete } from "../models/Athletes";
 import { useParams } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import type { Country } from "../models/Country";
 import type { Results } from "../models/Results";
 import type { Points } from "../models/Points";
+import type { NumericResultKey } from '../components/AddResults';
+import AddResults from '../components/AddResults';
 
 function EditAthlete() {
 
@@ -23,43 +25,42 @@ function EditAthlete() {
     const [ results, setResults ] = useState<Results[]>([]);
     const [ points, setPoints ] = useState<Points[]>([]);
 
-    type NumericResultKey = { [K in keyof Results]: Results[K] extends number ? K : never }[keyof Results];
-
     useEffect(() => {
         fetch("http://localhost:8080/countries")
             .then(res => res.json())
             .then((json: Country[]) => setCountries(json))
     }, []);
 
-    useEffect(() => {
+    const reloadAthlete = useCallback(() => {
         if (!athleteId) return;
         fetch(`http://localhost:8080/everything/athletes/${athleteId}`)
             .then(res => res.json())
-            .then((json: Athlete & { results: Results[]; points: Points[] }) => {
-                setAthlete(json);
-                setResults(json.results);
-                setPoints(json.points);
-            })
-    }, [athleteId]);
+            .then((data: Athlete & { results: Results[]; points: Points[] }) => {
+                setAthlete(data);
+                setResults(data.results);
+                setPoints(data.points);
+        });
+    },[athleteId]);
+
+    useEffect(() => {
+        reloadAthlete();
+    }, [reloadAthlete]);
 
     const editAthlete = () => {
         if (!athleteId || !athlete) return;
 
-        const updatedResults = results.map((result, i) => {
-            const updatedResult = { ...result } as Results;
-            const keys = Object.keys(result) as NumericResultKey[];
-            const numericKeys = keys.filter( k =>
-                k !== 'resultsId'
-            );
-            numericKeys.forEach((key) => {
-                const input = resultRefs.current[i]?.[key];
-                if (!input) return;                                                         
-                const raw = input.value;
-                updatedResult[key] = raw ===""
-                    ? result[key]
-                    : parseFloat(raw)
-            });
-            return updatedResult; 
+        const updatedExisting = results.map((result, i) => {
+            const updated = { ...result };
+            (Object.keys(result) as NumericResultKey[])
+                    .filter(key => key !== 'resultsId')
+                    .forEach(key => {
+                    const input = resultRefs.current[i]?.[key];
+                    if (input) {
+                        const raw = input.value;
+                        updated[key] = raw === '' ? result[key] : parseFloat(raw);
+                    }
+                });
+            return updated;
         });
 
         const modifiedAthlete = {
@@ -70,10 +71,10 @@ function EditAthlete() {
             latitudeBirthPlace: Number(latRef.current?.value) || athlete.latitudeBirthPlace,
             longitudeBirthPlace: Number(lonRef.current?.value) || athlete.longitudeBirthPlace,
             country: { countryId: Number(countryRef.current?.value) } as Country,
-            results: updatedResults
+            results: updatedExisting
         };
 
-        fetch(`http://localhost:8080/results/batch/${athleteId}`, {
+        fetch(``, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
@@ -85,22 +86,21 @@ function EditAthlete() {
             if (json.message && json.timestamp && json.status) {
                 toast.error(json.message);
             } else {
-                fetch(`http://localhost:8080/everything/athletes/${athleteId}`)
-                .then(res => res.json())
-                .then((pts: Points[]) => {
-                    setPoints(pts);
-                    toast.success('Athlete and results updated, points recalculated');
-                })
-            }
-        })
-    }
+                reloadAthlete();
+                toast.success("Athlete and results updated, points recalculated");
+            };
+        });
+    };
 
     if (!athlete) {
         return <p>Loading…</p>;
     }
 
+    const numericKeys: NumericResultKey[] = results.length ? (Object.keys(results[0]) as NumericResultKey[]).filter(k => k !== 'resultsId') : [];
+
     return (
         <div>
+            <h2>Edit Athlete</h2>
             <label>Name</label> <br />
             <input 
                 ref={nameRef} 
@@ -117,7 +117,8 @@ function EditAthlete() {
 
             <label>Birth Date</label> <br />
             <input 
-                ref={birthDateRef} type = "date" 
+                ref={birthDateRef} 
+                type = "date" 
                 defaultValue={athlete.birthDate.toISOString().split('T')[0]} 
             /> <br />
 
@@ -147,59 +148,59 @@ function EditAthlete() {
             </select>
             <br />
 
-            <label> Results </label> <br />
-            {results.map((result, i) => {
+            <label> Existing Results </label> <br />
+            {results.map((result, i) => ( 
+                <div key={result.resultsId}>
+                    {numericKeys.map(key => (
+                        <div key = {key}>
+                            <label> {key} </label> <br />
+                            <input 
+                                type="number"
+                                step="any"
+                                defaultValue={String(result[key])}
+                                ref={el => { 
+                                    if (el) resultRefs.current[i][key] = el;
+                                }} 
+                            /> <br />
+                        </div>
+                    ))}
+                </div>
+            ))}
+            
 
-                if (!resultRefs.current[i]) {
-                    resultRefs.current[i] = {};
-                }
-
-                const keys = Object.keys(result) as NumericResultKey[];
-                const numericKeys = keys.filter( k =>
-                    k !== 'resultsId'
-                );
-
-                return (
-                    <div key={result.resultsId ?? i}>
-                        {numericKeys.map(key => (
-                            <div key = {key}>
-                                <label> {key} </label> <br />
-                                <input 
-                                    type = "number"
-                                    step = "any"
-                                    defaultValue = {String(result[key])}
-                                    ref = {el =>
-                                        { if (el) resultRefs.current[i][key] = el; }
-                                    }
-                                /> <br />
-                            </div>
-                        ))}
-                    </div>
-                );
-            })}
-
-            <label> Points</label>
+            <h3> Points </h3>
             <ul>
-                {points.map(points => (
-                    <React.Fragment key = {points.pointId}>
-                        <li key = {points.pointId}> {points.hundredMeterRun} </li>
-                        <li key = {points.pointId}> {points.longJump} </li>
-                        <li key = {points.pointId}> {points.shotPut} </li>
-                        <li key = {points.pointId}> {points.highJump} </li>
-                        <li key = {points.pointId}> {points.fourHundredMeterRun} </li>
-                        <li key = {points.pointId}> {points.hundredTenMeterHurdle} </li>
-                        <li key = {points.pointId}> {points.discusThrow} </li>
-                        <li key = {points.pointId}> {points.poleVault} </li>
-                        <li key = {points.pointId}> {points.javelin} </li>
-                        <li key = {points.pointId}> {points.thousandFiveHundredMeterRun} </li>
-                        <li key = {points.pointId}> {points.totalScore} </li>
-                    </React.Fragment>
+                {points.map(pt => (
+                <li key={pt.pointId}>
+                    Total Score: {pt.totalScore} |
+                    100m: {pt.hundredMeterRun},
+                    LJ: {pt.longJump},
+                    SP: {pt.shotPut},
+                    HJ: {pt.highJump},
+                    400m: {pt.fourHundredMeterRun},
+                    110H: {pt.hundredTenMeterHurdle},
+                    DT: {pt.discusThrow},
+                    PV: {pt.poleVault}, 
+                    JT: {pt.javelin}, 
+                    1500m: {pt.thousandFiveHundredMeterRun}
+                </li>
                 ))}
             </ul>
             <button onClick={editAthlete}>Save Athlete</button>
+            
+            <button onClick={editAthlete}>
+                Save Athlete
+            </button>
+
+            <AddResults
+                athleteId={athleteId!}
+                numericKeys={numericKeys}
+                onResultsAdded={reloadAthlete}
+            />
+            
             <ToastContainer />
         </div>
-    )
+    );
 }
 
 export default EditAthlete
