@@ -34,8 +34,10 @@ public class Athlete {
     private Country country;
 
     @OneToMany(mappedBy = "athlete", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OrderColumn(name = "results_index")
     private List<Results> results = new ArrayList<>();
 
     @OneToMany(mappedBy = "athlete", cascade = CascadeType.ALL, orphanRemoval = true)//Ühel sportlasel võib olla mitu tulemuste komplekti ja sealt tulenevalt mitu selle põhjal arvutatud punktide oma
+    @OrderColumn(name = "points_index")
     private List<Points> points = new ArrayList<>();
 }

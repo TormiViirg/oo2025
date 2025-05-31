@@ -45,6 +45,18 @@ export default function AthleteDetails({
                         <div>Loading country…</div>
                     )}
 
+                    {athlete.latitudeBirthPlace ? (
+                        <div>{athlete.latitudeBirthPlace}</div>
+                        ) : (
+                        <div>Loading latitude…</div>
+                    )}
+
+                    {athlete.longitudeBirthPlace ? (
+                        <div>{athlete.longitudeBirthPlace}</div>
+                        ) : (
+                        <div>Loading longitude…</div>
+                    )}
+
                     {Array.isArray(athlete.nestedResults) ? (
                         <div>
                             {athlete.nestedResults.map((sublist: Results[], subIndex: number) => (

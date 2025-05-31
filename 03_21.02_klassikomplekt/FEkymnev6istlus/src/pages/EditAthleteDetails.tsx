@@ -88,9 +88,7 @@ function EditAthlete() {
             athleteId: Number(athleteId),
             athleteName: rawName !== "" ? rawName : athlete.athleteName,
             bio: rawBio !== "" ? rawBio : athlete.bio ?? "",
-            birthDate: rawBirth !== ""
-                ? rawBirth
-                : athlete.birthDate,
+            birthDate: rawBirth !== "" ? rawBirth : athlete.birthDate,
             latitudeBirthPlace: latitude,
             longitudeBirthPlace: longitude,
             country: { countryId: Number(rawCountryId) } as Country,
