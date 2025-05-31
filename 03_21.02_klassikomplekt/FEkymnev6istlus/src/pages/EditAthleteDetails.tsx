@@ -74,7 +74,7 @@ function EditAthlete() {
             results: updatedExisting
         };
 
-        fetch(``, {
+        fetch(`http://localhost:8080/editResults/${athleteId}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
@@ -186,7 +186,6 @@ function EditAthlete() {
                 </li>
                 ))}
             </ul>
-            <button onClick={editAthlete}>Save Athlete</button>
             
             <button onClick={editAthlete}>
                 Save Athlete

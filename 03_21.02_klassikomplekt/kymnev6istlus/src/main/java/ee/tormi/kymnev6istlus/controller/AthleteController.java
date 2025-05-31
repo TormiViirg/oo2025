@@ -6,6 +6,10 @@ import ee.tormi.kymnev6istlus.repository.AthleteRepository;
 import ee.tormi.kymnev6istlus.repository.PointsRepository;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,21 +30,29 @@ public class AthleteController {
     PointsRepository pointsRepository;
 
     //kuna ma ei taibanud omal elu lihtsaks teha siis kuna sportlane võib mitmel võistlusel osaleda ja seetõtu mitu resulti
-    @GetMapping("/athletes/overview/{athleteId}")
-    public ResponseEntity<List<Map<String, Object>>> getAthletePoints(@PathVariable("athleteId") Long athleteId) {
-        Athlete athlete = athleteRepository.findByIdWithPoints(athleteId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Athlete not found"));
+    @GetMapping("/athletes/overview")
+    public ResponseEntity<Page<Map<String, Object>>> getAthletesByCountry(
+            @RequestParam("countryId") Long countryId,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("athleteName").ascending());
+        Page<Athlete> athletesPage = athleteRepository.findByCountry_CountryId(countryId, pageable);
 
-        List<Map<String, Object>> result = athlete.getPoints().stream()
-                .map(p -> Map.<String, Object>of(
-                        "point_id",    p.getPointId(),
-                        "totalScore",  p.getTotalScore(),
+        Page<Map<String, Object>> dtoPage = athletesPage
+                .map(athlete -> Map.of(
+                        "athleteId", athlete.getAthleteId(),
                         "athleteName", athlete.getAthleteName(),
-                        "country",     athlete.getCountry().getCountryName()
-                ))
-                .collect(Collectors.toList());
+                        "country", athlete.getCountry().getCountryName(),
+                        "points", athlete.getPoints().stream()
+                            .map(points -> Map.of(
+                                    "pointId", points.getPointId(),
+                                    "totalScore", points.getTotalScore()
+                            ))
+                            .collect(Collectors.toList())
+                ));
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(dtoPage);
     }
 
     // Võimalda salvestada sportlane: nimi, riik, vanus.

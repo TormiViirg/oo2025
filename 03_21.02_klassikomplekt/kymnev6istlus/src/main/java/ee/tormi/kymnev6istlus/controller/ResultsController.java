@@ -77,7 +77,7 @@ public class ResultsController {
         return points;
     }
 
-    @PutMapping("results/{athleteId}")
+    @PutMapping("editResults/{athleteId}")
     public List<Points> addResultsBatch(@PathVariable Long athleteId, @RequestBody List<Results> resultsList) {
 
         Athlete athlete = athleteRepository.findById(athleteId)
@@ -114,7 +114,7 @@ public class ResultsController {
         return pointsRepository.saveAll(pointsList);
     }
 
-    @PostMapping
+    @PostMapping("addResults/{athleteId}")
     public ResponseEntity<List<Points>> addResults(@PathVariable Long athleteId, @RequestBody List<Results> resultsList){
         Athlete athlete = athleteRepository.findById(athleteId)
                 .orElseThrow(() -> new ResponseStatusException(

@@ -38,7 +38,7 @@ const AddResults: React.FC<Props> = ({ athleteId, numericKeys, onResultsAdded })
             return;
         }
 
-        fetch(`http://localhost:8080/results/${athleteId}`, {
+        fetch(`http://localhost:8080/addResults/${athleteId}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ results: payload }),
