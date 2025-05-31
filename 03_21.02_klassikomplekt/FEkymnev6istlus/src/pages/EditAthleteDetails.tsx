@@ -8,6 +8,19 @@ import type { Points } from "../models/Points";
 import type { NumericResultKey } from '../components/AddResults';
 import AddResults from '../components/AddResults';
 
+export const ALL_NUMERIC_RESULT_KEYS: NumericResultKey[] = [
+    "secondsHundredMeterRun",
+    "metersLongJump",
+    "metersShotPut",
+    "metersHighJump",
+    "secondsFourHundredMeterRun",
+    "secondsHundredTenMeterHurdle",
+    "metersDiscusThrow",
+    "metersPoleVault",
+    "metersJavelin",
+    "secondsThousandFiveHundredMeterRun",
+];
+
 function EditAthlete() {
 
     const { athleteId } = useParams<{ athleteId: string }>();
@@ -20,6 +33,9 @@ function EditAthlete() {
     const countryRef = useRef<HTMLSelectElement>(null);
 
     const resultRefs = useRef<Array<Array<Partial<Record<keyof Results, HTMLInputElement>>>>>([]);
+
+    const numericKeys = ALL_NUMERIC_RESULT_KEYS;
+
     const [ countries, setCountries ] = useState<Country[]>([]);
     const [ athlete, setAthlete ] = useState<Athlete | null>(null);
     const [ nestedResults, setNestedResults ] = useState<Results[][]>([]);
@@ -116,8 +132,6 @@ function EditAthlete() {
     if (!athlete) {
         return <p>Loading…</p>;
     }
-
-    const numericKeys: NumericResultKey[] = nestedResults.length > 0 && nestedResults[0].length > 0 ? (Object.keys(nestedResults[0][0]) as NumericResultKey[]).filter(k => k !== "resultsId") : [];
 
     return (
         <div>
