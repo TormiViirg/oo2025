@@ -13,11 +13,13 @@ function App() {
       <Menu/>
       <Routes>
         <Route path="/" element={ <MainPage /> } />
-        <Route path="/*" element={ <div>Page not found</div> } />
         <Route path="/map" element={ <Map /> } />
 
         <Route path="/admin/addAthlete" element={ <ManageAthletes /> } />
-        <Route path="/admin/addAthleteResults:athleteId" element={ <EditAthleteDetails /> } />
+        <Route path="/admin/addAthleteResults/:athleteId" element={ <EditAthleteDetails /> } />
+
+        
+        <Route path="/*" element={ <div>Page not found</div> } />
       </Routes>
     </>
   )

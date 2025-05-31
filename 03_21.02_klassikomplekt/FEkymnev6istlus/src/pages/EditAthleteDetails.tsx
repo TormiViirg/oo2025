@@ -18,12 +18,12 @@ function EditAthlete() {
     const latRef = useRef<HTMLInputElement>(null);
     const lonRef = useRef<HTMLInputElement>(null);
     const countryRef = useRef<HTMLSelectElement>(null);
-    const resultRefs = useRef<Array<Partial<Record<keyof Results, HTMLInputElement>>>>([]);
 
+    const resultRefs = useRef<Array<Array<Partial<Record<keyof Results, HTMLInputElement>>>>>([]);
     const [ countries, setCountries ] = useState<Country[]>([]);
     const [ athlete, setAthlete ] = useState<Athlete | null>(null);
-    const [ results, setResults ] = useState<Results[]>([]);
-    const [ points, setPoints ] = useState<Points[]>([]);
+    const [ nestedResults, setNestedResults ] = useState<Results[][]>([]);
+    const [ nestedPoints, setNestedPoints ] = useState<Points[][]>([]);
 
     useEffect(() => {
         fetch("http://localhost:8080/countries")
@@ -34,13 +34,23 @@ function EditAthlete() {
     const reloadAthlete = useCallback(() => {
         if (!athleteId) return;
         fetch(`http://localhost:8080/everything/athletes/${athleteId}`)
-            .then(res => res.json())
-            .then((data: Athlete & { results: Results[]; points: Points[] }) => {
+        .then((res) => res.json())
+        .then(
+            (data: Athlete & {
+                nestedResults: Results[][];
+                nestedPoints: Points[][];
+            }) => {
                 setAthlete(data);
-                setResults(data.results);
-                setPoints(data.points);
-        });
-    },[athleteId]);
+                setNestedResults(data.nestedResults ?? []);
+                setNestedPoints(data.nestedPoints ?? []);
+                resultRefs.current = (
+                    data.nestedResults ?? []
+                ).map((innerArr) =>
+                    innerArr.map(() => ({} as Record<keyof Results, HTMLInputElement>))
+                );
+            }
+        );
+    }, [athleteId]);
 
     useEffect(() => {
         reloadAthlete();
@@ -49,29 +59,42 @@ function EditAthlete() {
     const editAthlete = () => {
         if (!athleteId || !athlete) return;
 
-        const updatedExisting = results.map((result, i) => {
-            const updated = { ...result };
-            (Object.keys(result) as NumericResultKey[])
-                    .filter(key => key !== 'resultsId')
-                    .forEach(key => {
-                    const input = resultRefs.current[i]?.[key];
-                    if (input) {
-                        const raw = input.value;
-                        updated[key] = raw === '' ? result[key] : parseFloat(raw);
+        const updatedNested: Results[][] = nestedResults.map((innerArr, i) =>
+            innerArr.map((base, j) => {
+                const updated: Results = { ...base };
+                numericKeys.forEach(key => {
+                    const el = resultRefs.current[i]?.[j]?.[key];
+                    if (el) {
+                        const raw = el.value;
+                        updated[key] = raw === "" ? base[key] : parseFloat(raw);
                     }
                 });
-            return updated;
-        });
+                return updated;
+            })
+        );
+
+        const rawName = nameRef.current?.value ?? "";
+        const rawBio = bioRef.current?.value ?? "";
+        const rawBirth = birthDateRef.current?.value ?? "";
+        const rawLat = latRef.current?.value;
+        const rawLon = lonRef.current?.value;
+        const rawCountryId = countryRef.current?.value;
+
+        const latitude = rawLat !== "" ? Number(rawLat) : athlete.latitudeBirthPlace ?? 0;
+        const longitude = rawLon !== "" ? Number(rawLon) : athlete.longitudeBirthPlace ?? 0;
+
 
         const modifiedAthlete = {
             athleteId: Number(athleteId),
-            athleteName: nameRef.current?.value || athlete.athleteName,
-            bio: bioRef.current?.value || athlete.bio,
-            birthDate: new Date(birthDateRef.current?.value || athlete.birthDate.toISOString()),
-            latitudeBirthPlace: Number(latRef.current?.value) || athlete.latitudeBirthPlace,
-            longitudeBirthPlace: Number(lonRef.current?.value) || athlete.longitudeBirthPlace,
-            country: { countryId: Number(countryRef.current?.value) } as Country,
-            results: updatedExisting
+            athleteName: rawName !== "" ? rawName : athlete.athleteName,
+            bio: rawBio !== "" ? rawBio : athlete.bio ?? "",
+            birthDate: rawBirth !== ""
+                ? rawBirth
+                : athlete.birthDate,
+            latitudeBirthPlace: latitude,
+            longitudeBirthPlace: longitude,
+            country: { countryId: Number(rawCountryId) } as Country,
+            nestedResults: updatedNested
         };
 
         fetch(`http://localhost:8080/editResults/${athleteId}`, {
@@ -81,8 +104,8 @@ function EditAthlete() {
             },
             body: JSON.stringify(modifiedAthlete)
         })
-        .then(res => res.json())
-        .then(json => {
+        .then((res) => res.json())
+        .then((json) => {
             if (json.message && json.timestamp && json.status) {
                 toast.error(json.message);
             } else {
@@ -96,7 +119,7 @@ function EditAthlete() {
         return <p>Loading…</p>;
     }
 
-    const numericKeys: NumericResultKey[] = results.length ? (Object.keys(results[0]) as NumericResultKey[]).filter(k => k !== 'resultsId') : [];
+    const numericKeys: NumericResultKey[] = nestedResults.length > 0 && nestedResults[0].length > 0 ? (Object.keys(nestedResults[0][0]) as NumericResultKey[]).filter(k => k !== "resultsId") : [];
 
     return (
         <div>
@@ -106,40 +129,59 @@ function EditAthlete() {
                 ref={nameRef} 
                 defaultValue={athlete?.athleteName} 
                 type="text" 
-            /> <br />
+            /> {" "} <br />
 
             <label>Bio</label> <br />
             <textarea 
                 ref={bioRef} 
-                defaultValue={athlete.bio} 
+                defaultValue={athlete.bio ?? ""} 
                 rows={4} 
-            /> <br />
+            /> {" "} <br />
 
             <label>Birth Date</label> <br />
             <input 
                 ref={birthDateRef} 
                 type = "date" 
-                defaultValue={athlete.birthDate.toISOString().split('T')[0]} 
-            /> <br />
+                defaultValue={
+                    athlete.birthDate
+                } 
+            />{" "} <br />
 
             <label>Latitude of BirthPlace</label> <br />
             <input 
-                ref={latRef} 
-                defaultValue = {String(athlete.latitudeBirthPlace)} 
+                ref={latRef}  
                 type = "number" 
-                step = "any" 
-            /> <br />
+                step = "any"
+                defaultValue={
+                    athlete.latitudeBirthPlace != null
+                        ? String(athlete.latitudeBirthPlace)
+                        : ""
+                } 
+            /> {" "} <br />
 
             <label>Longitude of BirthPlace</label> <br />
             <input 
-                ref={lonRef} 
-                defaultValue = {String(athlete.longitudeBirthPlace)} 
+                ref={lonRef}  
                 type = "number" 
                 step = "any" 
+                defaultValue = {
+                    athlete.longitudeBirthPlace != null
+                        ? String(athlete.longitudeBirthPlace)
+                        : ""
+                }
             /> <br />
 
             <label>Country</label> <br />
-            <select ref={countryRef} defaultValue={String(athlete.country.countryId)}>
+            <select 
+                ref={countryRef} 
+                defaultValue={
+                    athlete.country ? String(athlete.country.countryId) : ""
+                }
+            >
+            <option value="" disabled>
+                - Select country -
+            </option>
+
             {countries.map(country => (
                 <option key={country.countryId} value={country.countryId}>
                     {country.countryName}
@@ -149,19 +191,41 @@ function EditAthlete() {
             <br />
 
             <label> Existing Results </label> <br />
-            {results.map((result, i) => ( 
-                <div key={result.resultsId}>
-                    {numericKeys.map(key => (
-                        <div key = {key}>
-                            <label> {key} </label> <br />
-                            <input 
-                                type="number"
-                                step="any"
-                                defaultValue={String(result[key])}
-                                ref={el => { 
-                                    if (el) resultRefs.current[i][key] = el;
-                                }} 
-                            /> <br />
+            <label>Existing Nested Results</label> <br />
+            {nestedResults.map((innerArray, i) => (
+                <div key={`set-${i}`} style={{ marginBottom: "1rem" }}>
+                <strong>Result Set #{i + 1}</strong>
+                    {innerArray.map((result, j) => (
+                        <div
+                            key={result.resultsId}
+                            style={{ marginLeft: "1rem", marginBottom: "0.5rem" }}
+                        >
+                            <em>Result #{j + 1} (ID: {result.resultsId})</em>
+                            {numericKeys.map((key) => (
+                                <div key={key}>
+                                    <label htmlFor={`r-${i}-${j}-${key}`}>{key}</label>
+                                    <br />
+                                    <input
+                                        id={`r-${i}-${j}-${key}`}
+                                        type="number"
+                                        step="any"
+                                        defaultValue={String(result[key])}
+                                        ref={el => {
+                                            if (!resultRefs.current[i]) {
+                                                resultRefs.current[i] = [];
+                                            }
+                                            
+                                            if (!resultRefs.current[i][j]) {
+                                                resultRefs.current[i][j] = {} as Partial<Record<keyof Results, HTMLInputElement>>;
+                                            }
+                                            if (el) {
+                                                resultRefs.current[i][j][key] = el;
+                                            }
+                                        }}
+                                    />
+                                    <br />
+                                </div>
+                            ))}
                         </div>
                     ))}
                 </div>
@@ -170,20 +234,27 @@ function EditAthlete() {
 
             <h3> Points </h3>
             <ul>
-                {points.map(pt => (
-                <li key={pt.pointId}>
-                    Total Score: {pt.totalScore} |
-                    100m: {pt.hundredMeterRun},
-                    LJ: {pt.longJump},
-                    SP: {pt.shotPut},
-                    HJ: {pt.highJump},
-                    400m: {pt.fourHundredMeterRun},
-                    110H: {pt.hundredTenMeterHurdle},
-                    DT: {pt.discusThrow},
-                    PV: {pt.poleVault}, 
-                    JT: {pt.javelin}, 
-                    1500m: {pt.thousandFiveHundredMeterRun}
-                </li>
+                {nestedPoints.map((innerPts, i) => (
+                    <div key={`pts-group-${i}`} style={{ marginBottom: "1rem" }}>
+                        <strong>Points Group #{i + 1}</strong>
+                        <ul style={{ marginLeft: "1rem" }}>
+                            {innerPts.map((pt) => (
+                                <li key={pt.pointId}>
+                                    Total: {pt.totalScore}, 
+                                    100m: {pt.hundredMeterRun}, 
+                                    LJ:{" "} {pt.longJump}, 
+                                    SP: {pt.shotPut}, 
+                                    HJ: {pt.highJump}, 
+                                    400m:{" "} {pt.fourHundredMeterRun}, 
+                                    110H: {pt.hundredTenMeterHurdle}, 
+                                    DT:{" "} {pt.discusThrow}, 
+                                    PV: {pt.poleVault}, 
+                                    JT: {pt.javelin}, 
+                                    1500m:{" "} {pt.thousandFiveHundredMeterRun}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 ))}
             </ul>
             

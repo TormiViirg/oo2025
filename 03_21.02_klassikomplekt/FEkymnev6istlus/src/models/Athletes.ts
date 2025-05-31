@@ -6,11 +6,11 @@ export type Athlete = {
     athleteId: number,
     athleteName: string,
     bio: string,
-    birthDate: Date,
+    birthDate: string,
     latitudeBirthPlace: number,
     longitudeBirthPlace: number,
 
     country: Country,
-    results: Results[],
-    points: Points[]
+    nestedResults?: Results[][],
+    nestedPoints?: Points[][]
 }

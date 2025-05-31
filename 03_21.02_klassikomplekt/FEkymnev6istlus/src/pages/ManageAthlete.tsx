@@ -12,28 +12,30 @@ function ManageAthletes() {
     const birthDateRef = useRef<HTMLInputElement>(null);
     const latRef = useRef<HTMLInputElement>(null);
     const lonRef = useRef<HTMLInputElement>(null);
+
     const countryRef = useRef<HTMLSelectElement>(null);
 
     const [ athlete, setAthlete ] = useState<Athlete>({
         athleteId: 0,
         athleteName: "",
         bio: "",
-        birthDate: new Date(),
+        birthDate: "",
         latitudeBirthPlace: 0,
         longitudeBirthPlace: 0,
         country: {
             countryId: 0,
             countryName: ""
         },
-        results: [],
-        points: []
+        nestedResults: [],
+        nestedPoints: [],
     });
+    
     const [ countryList, setCountryList ] = useState<Country[]>([]);
 
     useEffect(() => {
         fetch('http://localhost:8080/countries')
-            .then(res => res.json())
-            .then(json => setCountryList(json))
+            .then((res) => res.json())
+            .then((json) => setCountryList(json))
     }, []);
 
     const addAthlete = (e?: React.FormEvent) => {
@@ -50,12 +52,12 @@ function ManageAthletes() {
         };
 
         fetch("http://localhost:8080/athlete", {
-            method:  "POST",
+            method: "POST",
             headers: { "Content-Type": "application/json" },
-            body:    JSON.stringify(newAthlete),
+            body: JSON.stringify(newAthlete),
         })
-        .then(res => res.json())
-        .then(json => {
+        .then((res) => res.json())
+        .then((json) => {
             if (!json.status) {
                 const createdAthlete = (json as Athlete[]).find(
                     (a: Athlete) => a.athleteName === newAthlete.athleteName
@@ -64,27 +66,21 @@ function ManageAthletes() {
                     toast.error("Newly created athlete not found.");
                     return;
                 }
-                const matchedCountry = countryList.find(c => c.countryId === selectedCountryId) ?? {
+                const matchedCountry = countryList.find((c) => c.countryId === selectedCountryId) ?? {
                     countryId: selectedCountryId,
                     countryName: ""
                 };
                 setAthlete({
                     ...createdAthlete,
                     country: matchedCountry,
-                    birthDate: new Date(createdAthlete.birthDate)
+                    birthDate: createdAthlete.birthDate,
+                    athleteId: createdAthlete.athleteId
                 });
                 toast.success("New Athlete successfully added!");
             } else {
                 toast.error(json.message);
             }
         })
-        .catch(err => toast.error(err.message));
-    };
-
-    const formatDateInput = (date: Date) => {
-        return date instanceof Date && !isNaN(date.getTime())
-        ? date.toISOString().slice(0, 10)
-        : "";
     };
 
     return (
@@ -116,7 +112,7 @@ function ManageAthletes() {
                 <input
                     ref={birthDateRef} 
                     type="date"
-                    defaultValue={formatDateInput(athlete.birthDate)}
+                    defaultValue={athlete.birthDate}
                 /> <br />
 
                 <label>Latitude of BirthPlace</label> <br />
@@ -140,7 +136,7 @@ function ManageAthletes() {
                     ref={countryRef} 
                     defaultValue={String(athlete.country.countryId)}
                 >
-                    {countryList.map(country => (
+                    {countryList.map((country) => (
                         <option key={country.countryId} value={country.countryId}>
                             {country.countryName}
                         </option>
@@ -151,7 +147,7 @@ function ManageAthletes() {
             </form>
 
             {athlete.athleteId > 0 && (
-                <Link to = {`/admin/addAthleteResults:${athlete.athleteId}`} >
+                <Link to = {`/admin/addAthleteResults/${athlete.athleteId}`} >
                     <button>Add results</button>
                 </Link>
             )}
