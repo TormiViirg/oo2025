@@ -7,10 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
 @Getter
 @Setter
 @Entity
@@ -24,20 +20,36 @@ public class Athlete {
     private Long athleteId;
 
     private String athleteName;
-    private String bio;
-    private LocalDate birthDate;
+    private Double age;
     private Double latitudeBirthPlace;
     private Double longitudeBirthPlace;
 
-    @ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name = "countryId", nullable = false)// sportlane ühest riigist aga ühel riigil mitu sportlast
     private Country country;
 
-    @OneToMany(mappedBy = "athlete", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @OrderColumn(name = "results_index")
-    private List<Results> results = new ArrayList<>();
+    private Double secondsHundredMeterRun;
+    private Double metersLongJump;
+    private Double metersShotPut;
+    private Double metersHighJump;
+    private Double secondsFourHundredMeterRun;
+    private Double secondsHundredTenMeterHurdle;
+    private Double metersDiscusThrow;
+    private Double metersPoleVault;
+    private Double metersJavelin;
+    private Double secondsThousandFiveHundredMeterRun;
 
-    @OneToMany(mappedBy = "athlete", cascade = CascadeType.ALL, orphanRemoval = true)//Ühel sportlasel võib olla mitu tulemuste komplekti ja sealt tulenevalt mitu selle põhjal arvutatud punktide oma
-    @OrderColumn(name = "points_index")
-    private List<Points> points = new ArrayList<>();
+
+    private Double hundredMeterRun;
+    private Double longJump;
+    private Double shotPut;
+    private Double highJump;
+    private Double fourHundredMeterRun;
+    private Double hundredTenMeterHurdle;
+    private Double discusThrow;
+    private Double poleVault;
+    private Double javelin;
+    private Double thousandFiveHundredMeterRun;
+
+    private Double totalScore;
 }

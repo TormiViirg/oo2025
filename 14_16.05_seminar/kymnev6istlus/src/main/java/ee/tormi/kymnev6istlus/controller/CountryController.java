@@ -1,7 +1,6 @@
 package ee.tormi.kymnev6istlus.controller;
 
 import ee.tormi.kymnev6istlus.entity.Country;
-import ee.tormi.kymnev6istlus.entity.Points;
 import ee.tormi.kymnev6istlus.repository.CountryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

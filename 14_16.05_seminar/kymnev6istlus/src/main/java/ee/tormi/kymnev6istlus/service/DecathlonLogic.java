@@ -1,19 +1,20 @@
 package ee.tormi.kymnev6istlus.service;
-import ee.tormi.kymnev6istlus.entity.Points;
-import ee.tormi.kymnev6istlus.entity.Results;
-import ee.tormi.kymnev6istlus.repository.PointsRepository;
+import ee.tormi.kymnev6istlus.entity.Athlete;
+import ee.tormi.kymnev6istlus.repository.AthleteRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 
 public class DecathlonLogic {
 
-    private final PointsRepository pointsRepository;
+    private final AthleteRepository athleteRepository;
 
-    public DecathlonLogic(PointsRepository pointsRepository) {
-        this.pointsRepository = pointsRepository;
+    public DecathlonLogic(AthleteRepository athleteRepository) {
+        this.athleteRepository = athleteRepository;
     }
 
 
@@ -40,7 +41,9 @@ public class DecathlonLogic {
         }
 
         double score(Double perf) {
-            if (perf == null) return 0.0;
+            if (perf == null) {
+                return 0.0;
+            }
             double x;
             if (isTrack) {
                 x = (B - perf);
@@ -51,71 +54,71 @@ public class DecathlonLogic {
                     x = perf - B;
                 }
             }
+            if (x <= 0) {
+                return 0.0;
+            }
             return A * Math.pow(x, C);
         }
     }
 
-    public Points computeSome(Results results) {
-        Points points = new Points();
+    public Athlete computeSome(Athlete athlete) {
 
-        points.setHundredMeterRun(
-                Event.HUNDRED_METER_RUN.score(results.getSecondsHundredMeterRun())
+        athlete.setHundredMeterRun(
+                Event.HUNDRED_METER_RUN.score(athlete.getSecondsHundredMeterRun())
         );
-        points.setLongJump(
-                Event.LONG_JUMP.score(results.getMetersLongJump())
+        athlete.setLongJump(
+                Event.LONG_JUMP.score(athlete.getMetersLongJump())
         );
-        points.setShotPut(
-                Event.SHOT_PUT.score(results.getMetersShotPut())
+        athlete.setShotPut(
+                Event.SHOT_PUT.score(athlete.getMetersShotPut())
         );
-        points.setHighJump(
-                Event.HIGH_JUMP.score(results.getMetersHighJump())
+        athlete.setHighJump(
+                Event.HIGH_JUMP.score(athlete.getMetersHighJump())
         );
-        points.setFourHundredMeterRun(
-                Event.FOUR_HUNDRED_METER_RUN.score(results.getSecondsFourHundredMeterRun())
+        athlete.setFourHundredMeterRun(
+                Event.FOUR_HUNDRED_METER_RUN.score(athlete.getSecondsFourHundredMeterRun())
         );
-        points.setHundredTenMeterHurdle(
-                Event.HUNDRED_TEN_METER_HURDLE.score(results.getSecondsHundredTenMeterHurdle())
+        athlete.setHundredTenMeterHurdle(
+                Event.HUNDRED_TEN_METER_HURDLE.score(athlete.getSecondsHundredTenMeterHurdle())
         );
-        points.setDiscusThrow(
-                Event.DISCUS_THROW.score(results.getMetersDiscusThrow())
+        athlete.setDiscusThrow(
+                Event.DISCUS_THROW.score(athlete.getMetersDiscusThrow())
         );
-        points.setPoleVault(
-                Event.POLE_VAULT.score(results.getMetersPoleVault())
+        athlete.setPoleVault(
+                Event.POLE_VAULT.score(athlete.getMetersPoleVault())
         );
-        points.setJavelin(
-                Event.JAVELIN.score(results.getMetersJavelin())
+        athlete.setJavelin(
+                Event.JAVELIN.score(athlete.getMetersJavelin())
         );
-        points.setThousandFiveHundredMeterRun(
-                Event.THOUSAND_FIVE_HUNDRED_METER_RUN.score(results.getSecondsThousandFiveHundredMeterRun())
+        athlete.setThousandFiveHundredMeterRun(
+                Event.THOUSAND_FIVE_HUNDRED_METER_RUN.score(athlete.getSecondsThousandFiveHundredMeterRun())
         );
 
-        Double total = calculateTotalScore(points);
-        points.setTotalScore(total);
+        Double total = calculateTotalScore(athlete);
+        athlete.setTotalScore(total);
 
-        return pointsRepository.save(points);
+        return athleteRepository.save(athlete);
     }
 
-    public List<Points> computeAll(List<Results> allResults) {
-        List<Points> pointsList = new ArrayList<>();
-        for (Results results : allResults) {
-            pointsList.add(computeSome(results));
-        }
-        return pointsList;
+    public List<Athlete> computeAll(List<Athlete> allResults) {
+        return allResults.stream()
+                .map(this::computeSome)
+                .collect(Collectors.toList());
     }
 
-    public double calculateTotalScore(Points points) {
-        return points.getHundredMeterRun()
-                + points.getLongJump()
-                + points.getShotPut()
-                + points.getHighJump()
-                + points.getFourHundredMeterRun()
-                + points.getHundredTenMeterHurdle()
-                + points.getDiscusThrow()
-                + points.getPoleVault()
-                + points.getJavelin()
-                + points.getThousandFiveHundredMeterRun();
+    public double calculateTotalScore(Athlete athlete) {
+
+        double h100 = athlete.getHundredMeterRun() != null ? athlete.getHundredMeterRun() : 0.0;
+        double lj = athlete.getLongJump() != null ? athlete.getLongJump() : 0.0;
+        double sp = athlete.getShotPut() != null ? athlete.getShotPut() : 0.0;
+        double hj = athlete.getHighJump() != null ? athlete.getHighJump() : 0.0;
+        double f400 = athlete.getFourHundredMeterRun() != null ? athlete.getFourHundredMeterRun() : 0.0;
+        double h110h = athlete.getHundredTenMeterHurdle() != null ? athlete.getHundredTenMeterHurdle() : 0.0;
+        double disc = athlete.getDiscusThrow() != null ? athlete.getDiscusThrow() : 0.0;
+        double pole = athlete.getPoleVault() != null ? athlete.getPoleVault() : 0.0;
+        double jav = athlete.getJavelin() != null ? athlete.getJavelin() : 0.0;
+        double m1500 = athlete.getThousandFiveHundredMeterRun() != null ? athlete.getThousandFiveHundredMeterRun() : 0.0;
+
+        return h100 + lj + sp + hj + f400 + h110h + disc + pole + jav + m1500;
     }
-
-
-
 }
