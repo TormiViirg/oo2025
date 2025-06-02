@@ -58,9 +58,39 @@ public class AthleteController {
             throw new RuntimeException("ERROR_MUST_ENTER_LONGITUDE");
         }
 
-        athleteRepository.save(athlete);
+        decathlonLogic.computeSome(athlete);
         return athleteRepository.findAll();
     }
+// edit afterwards
+    @PutMapping("/editResults/{athleteId}")
+    public List<Athlete> updateAthlete(@RequestBody Athlete athlete) {
+        // For a PUT (update), the athlete must already have an ID
+        if (athlete.getAthleteId() == null) {
+            throw new RuntimeException("ERROR_MUST_PROVIDE_ID_FOR_UPDATE");
+        }
+
+        // Ensure the athlete actually exists before updating
+        if (!athleteRepository.existsById(athlete.getAthleteId())) {
+            throw new RuntimeException("ERROR_NO_ATHLETE_WITH_ID");
+        }
+
+        if (athlete.getAthleteName() == null) {
+            throw new RuntimeException("ERROR_MUST_ENTER_NAME");
+        }
+        if (athlete.getAge() == null) {
+            throw new RuntimeException("ERROR_MUST_ENTER_AGE");
+        }
+        if (athlete.getLatitudeBirthPlace() == null) {
+            throw new RuntimeException("ERROR_MUST_ENTER_LATITUDE");
+        }
+        if (athlete.getLongitudeBirthPlace() == null) {
+            throw new RuntimeException("ERROR_MUST_ENTER_LONGITUDE");
+        }
+
+        decathlonLogic.computeSome(athlete);
+        return athleteRepository.findAll();
+    }
+
 
     // everything about athlete
     @GetMapping("/everything/athletes/{athleteId}")

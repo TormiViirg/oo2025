@@ -125,7 +125,7 @@ function ManageAthletes() {
                 </select>
                 <br />
                 
-                <label>ENTER RESULTS</label> <br />
+                <label>Results</label> <br />
                 <label>hundredMeterRun</label> <br />
                 <input
                     ref={secondsHundredMeterRunRef} 

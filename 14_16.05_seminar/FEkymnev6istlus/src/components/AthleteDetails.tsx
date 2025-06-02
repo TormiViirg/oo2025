@@ -89,17 +89,17 @@ export default function AthleteDetails({
                         </thead>
                         <tbody>
                             <tr>
-                                <td>{athlete.hundredMeterRun}</td>
-                                <td>{athlete.longJump}</td>
-                                <td>{athlete.shotPut}</td>
-                                <td>{athlete.highJump}</td>
-                                <td>{athlete.fourHundredMeterRun}</td>
-                                <td>{athlete.hundredTenMeterHurdle}</td>
-                                <td>{athlete.discusThrow}</td>
-                                <td>{athlete.poleVault}</td>
-                                <td>{athlete.javelin}</td>
-                                <td>{athlete.thousandFiveHundredMeterRun}</td>
-                                <td>{athlete.totalScore}</td>
+                                <td>{athlete.hundredMeterRun.toFixed(2)}</td>
+                                <td>{athlete.longJump.toFixed(2)}</td>
+                                <td>{athlete.shotPut.toFixed(2)}</td>
+                                <td>{athlete.highJump.toFixed(2)}</td>
+                                <td>{athlete.fourHundredMeterRun.toFixed(2)}</td>
+                                <td>{athlete.hundredTenMeterHurdle.toFixed(2)}</td>
+                                <td>{athlete.discusThrow.toFixed(2)}</td>
+                                <td>{athlete.poleVault.toFixed(2)}</td>
+                                <td>{athlete.javelin.toFixed(2)}</td>
+                                <td>{athlete.thousandFiveHundredMeterRun.toFixed(2)}</td>
+                                <td>{athlete.totalScore.toFixed(2)}</td>
                             </tr>
                         </tbody>
                     </table>

@@ -134,7 +134,7 @@ function EditAthlete() {
                 <input
                     value={age} 
                     type="number"
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => setAge(Number(e.target.value))}
                 /> <br />
 
                 <label>Latitude of BirthPlace</label> <br />
