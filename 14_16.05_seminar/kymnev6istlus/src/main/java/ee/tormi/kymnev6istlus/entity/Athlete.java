@@ -24,7 +24,7 @@ public class Athlete {
     private Double latitudeBirthPlace;
     private Double longitudeBirthPlace;
 
-    @ManyToOne (fetch = FetchType.EAGER)
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "countryId", nullable = false)// sportlane ühest riigist aga ühel riigil mitu sportlast
     private Country country;
 

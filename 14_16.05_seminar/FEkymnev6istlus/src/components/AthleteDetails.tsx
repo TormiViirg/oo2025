@@ -1,6 +1,4 @@
 import type { Athlete } from '../models/Athletes';
-import type { Results } from "../models/Results";
-import type { Points } from "../models/Points";
 
 type Details = {
   athlete: Athlete;
@@ -12,11 +10,8 @@ export default function AthleteDetails({
     athlete, 
     isVisible, 
     onToggle,
-}: Details) {
+    }: Details) {
 
-    const displayBirthDate = athlete.birthDate
-    ? new Date(athlete.birthDate).toDateString()
-    : "No birth date";
 
     return (
         <div>
@@ -27,97 +22,88 @@ export default function AthleteDetails({
 
             {isVisible && (
                 <div>
-                    {athlete.bio ? (
-                        <div>{athlete.bio}</div>
-                    ) : (
-                        <div>Loading bio…</div>
-                    )}
-
-                    {athlete.birthDate ? (
-                        <div>{displayBirthDate}</div>
+                    <label> Age: </label>
+                    {athlete.age ? (
+                        <div>{athlete.age}</div>
                     ) : (
                         <div>Loading birthdate…</div>
                     )}
-
+                    
+                    <label> Country: </label>
                     {athlete.country ? (
                         <div>{athlete.country?.countryName}</div>
                         ) : (
                         <div>Loading country…</div>
                     )}
 
-                    {athlete.latitudeBirthPlace ? (
-                        <div>{athlete.latitudeBirthPlace}</div>
-                        ) : (
-                        <div>Loading latitude…</div>
-                    )}
+                    <h3>Results</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>100m Run Seconds</th>
+                                <th>Long Jump Meters</th>
+                                <th>Shot Put Meters</th>
+                                <th>High Jump Meters</th>
+                                <th>400m Run Seconds</th>
+                                <th>110m Hurdles Seconds</th>
+                                <th>Discus Throw Meters</th>
+                                <th>Pole Vault Meters</th>
+                                <th>Javelin Meters</th>
+                                <th>1500m Run Seconds</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{athlete.secondsHundredMeterRun}</td>
+                                <td>{athlete.metersLongJump}</td>
+                                <td>{athlete.metersShotPut}</td>
+                                <td>{athlete.metersHighJump}</td>
+                                <td>{athlete.secondsFourHundredMeterRun}</td>
+                                <td>{athlete.secondsHundredTenMeterHurdle}</td>
+                                <td>{athlete.metersDiscusThrow}</td>
+                                <td>{athlete.metersPoleVault}</td>
+                                <td>{athlete.metersJavelin}</td>
+                                <td>{athlete.secondsThousandFiveHundredMeterRun}</td>
 
-                    {athlete.longitudeBirthPlace ? (
-                        <div>{athlete.longitudeBirthPlace}</div>
-                        ) : (
-                        <div>Loading longitude…</div>
-                    )}
+                            </tr>
+                        </tbody>
+                    </table>
 
-                    {Array.isArray(athlete.nestedResults) ? (
-                        <div>
-                            {athlete.nestedResults.map((sublist: Results[], subIndex: number) => (
-                                <div key={subIndex} style={{ marginBottom: "0.75rem" }}>
-                                    <strong>Result Group {subIndex + 1}:</strong>
-                                    <ul>
-                                        {sublist.map((result: Results) => (
-                                            <li key={result.resultsId}>
-                                                <ul>
-                                                    <li>100m Run: {result.secondsHundredMeterRun}s</li>
-                                                    <li>Long Jump: {result.metersLongJump}m</li>
-                                                    <li>Shot Put: {result.metersShotPut}m</li>
-                                                    <li>High Jump: {result.metersHighJump}m</li>
-                                                    <li>400m Run: {result.secondsFourHundredMeterRun}s</li>
-                                                    <li>110m Hurdles:{" "}{result.secondsHundredTenMeterHurdle}s</li>
-                                                    <li>Discus Throw: {result.metersDiscusThrow}m</li>
-                                                    <li>Pole Vault: {result.metersPoleVault}m</li>
-                                                    <li>Javelin: {result.metersJavelin}m</li>
-                                                    <li>1500m Run:{" "}{result.secondsThousandFiveHundredMeterRun}s</li>
-                                                </ul>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                    <div>Loading nested results…</div>
-                    )}
-
-                    {Array.isArray(athlete.nestedPoints) ? (
-                        <div>
-                            {athlete.nestedPoints.map((sublist: Points[], subIndex: number) => (
-                                <div key={subIndex} style={{ marginBottom: "0.75rem" }}>
-                                    <strong>Points Group {subIndex + 1}:</strong>
-                                    <ul>
-                                        {sublist.map((pt: Points) => (
-                                            <li key={pt.pointId}>
-                                                <ul>
-                                                    <li>100m Run Points: {pt.hundredMeterRun}</li>
-                                                    <li>Long Jump Points: {pt.longJump}</li>
-                                                    <li>Shot Put Points: {pt.shotPut}</li>
-                                                    <li>High Jump Points: {pt.highJump}</li>
-                                                    <li>400m Run Points: {pt.fourHundredMeterRun}</li>
-                                                    <li>110m Hurdles Points: {pt.hundredTenMeterHurdle}</li>
-                                                    <li>Discus Throw Points: {pt.discusThrow}</li>
-                                                    <li>Pole Vault Points: {pt.poleVault}</li>
-                                                    <li>Javelin Points: {pt.javelin}</li>
-                                                    <li> 1500m Run Points: {pt.thousandFiveHundredMeterRun}</li>
-                                                    <li>Total Score: {pt.totalScore}</li>
-                                                </ul>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            ))}
-                        </div>
-                        ) : (
-                        <div>Loading nested points…</div>
-                    )}
-                </div>
+                    <h3>Points</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>100m Run Points</th>
+                                <th>Long Jump Points</th>
+                                <th>Shot Put Points</th>
+                                <th>High Jump Points</th>
+                                <th>400m Run Points</th>
+                                <th>110m Hurdles Points</th>
+                                <th>Discus Throw Points</th>
+                                <th>Pole Vault Points</th>
+                                <th>Javelin Points</th>
+                                <th>1500m Run Points</th>
+                                <th>Total Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{athlete.hundredMeterRun}</td>
+                                <td>{athlete.longJump}</td>
+                                <td>{athlete.shotPut}</td>
+                                <td>{athlete.highJump}</td>
+                                <td>{athlete.fourHundredMeterRun}</td>
+                                <td>{athlete.hundredTenMeterHurdle}</td>
+                                <td>{athlete.discusThrow}</td>
+                                <td>{athlete.poleVault}</td>
+                                <td>{athlete.javelin}</td>
+                                <td>{athlete.thousandFiveHundredMeterRun}</td>
+                                <td>{athlete.totalScore}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>                    
             )}
         </div>
     );

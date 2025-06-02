@@ -29,21 +29,14 @@ public class AthleteController {
 
     //all athletes by country
     @GetMapping("/athletes/overview")
-    public ResponseEntity<Page<Map<String, Object>>> getAthletesByCountry(
+    public ResponseEntity<Page<Athlete>> getAthletesByCountry(
             @RequestParam("countryId") Long countryId,
-            @RequestParam("page") int page,
-            @RequestParam("size") int size
+            @RequestParam("page")      int page,
+            @RequestParam("size")      int size
     ) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("athleteName").ascending());
         Page<Athlete> athletesPage = athleteRepository.findByCountry_CountryId(countryId, pageable);
-        Page<Map<String, Object>> dtoPage = athletesPage
-                .map(athlete -> Map.of(
-                        "athleteId", athlete.getAthleteId(),
-                        "athleteName", athlete.getAthleteName(),
-                        "country", athlete.getCountry().getCountryName(),
-                        "totalScore", athlete.getTotalScore()
-                ));
-        return ResponseEntity.ok(dtoPage);
+        return ResponseEntity.ok(athletesPage);
     }
 
     // initialization of athlete
@@ -72,7 +65,7 @@ public class AthleteController {
     // everything about athlete
     @GetMapping("/everything/athletes/{athleteId}")
     public ResponseEntity<Athlete> getAthleteEverything(@PathVariable Long athleteId) {
-        Athlete athlete = athleteRepository.findById(athleteId)
+        Athlete athlete = athleteRepository.findByIdWithCountry(athleteId)
                 .orElseThrow(() -> new RuntimeException("ERROR_ATHLETE_NOT_FOUND_WITH_ID" + athleteId));
         return ResponseEntity.ok(athlete);
     }

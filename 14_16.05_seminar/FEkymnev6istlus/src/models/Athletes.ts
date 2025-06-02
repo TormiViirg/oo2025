@@ -1,16 +1,37 @@
 import type { Country } from "./Country"
-import type { Points } from "./Points"
-import type { Results } from "./Results"
 
 export type Athlete = {
+
     athleteId: number,
     athleteName: string,
     bio: string,
-    birthDate: string,
+    age: number,
     latitudeBirthPlace: number,
     longitudeBirthPlace: number,
 
     country: Country,
-    nestedResults?: Results[][],
-    nestedPoints?: Points[][]
+    
+    secondsHundredMeterRun: number,
+    metersLongJump: number,
+    metersShotPut: number,
+    metersHighJump: number,
+    secondsFourHundredMeterRun: number,
+    secondsHundredTenMeterHurdle: number,
+    metersDiscusThrow: number,
+    metersPoleVault: number,
+    metersJavelin: number,
+    secondsThousandFiveHundredMeterRun: number,
+
+    hundredMeterRun: number,
+    longJump: number,
+    shotPut: number,
+    highJump: number,
+    fourHundredMeterRun: number,
+    hundredTenMeterHurdle: number,
+    discusThrow: number,
+    poleVault: number,
+    javelin: number,
+    thousandFiveHundredMeterRun: number,
+
+    totalScore: number,
 }

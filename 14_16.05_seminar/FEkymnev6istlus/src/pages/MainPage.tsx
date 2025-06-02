@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import AthleteDetails from '../components/AthleteDetails';
 import type { Athlete } from '../models/Athletes';
 import type { Country } from '../models/Country';
-import type { Points } from '../models/Points';
-import type { Results } from '../models/Results';
+
 //import '../components/MainPage.css';
 
 function MainPage() {
@@ -14,7 +13,6 @@ function MainPage() {
 
     const [activeCountry, setActiveCountry] = useState<number>(-1);
     const [visibleDetailsId, setVisibleDetailsId] = useState<number | null>(null);
-    
     const [athletesByPage] = useState(10);
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
@@ -27,29 +25,23 @@ function MainPage() {
             .then((json) => setCountryList(json))
     }, []);
 
-    const showByCountry = useCallback(
-        (countryId: number, currentPage: number) => {
+    const showByCountry = useCallback((countryId: number, currentPage: number) => {
         setActiveCountry(countryId);
         setPage(currentPage);
         fetch(`http://localhost:8080/athletes/overview?countryId=${countryId}&size=${athletesByPage}&page=${currentPage}`)
-        .then((res) => {
-            if (!res.ok) {
-                throw new Error(`HTTP ${res.status}`);
-            }
-            return res.json();
-        })
-        .then((json: { content: Athlete[]; totalPages: number}) => {
-            setAthletes(json.content ?? []);
-            setTotalPages(json.totalPages ?? 0);
-        })
-        .catch((err) => {
-            console.error("Failed to fetch athletes:", err);
-            setAthletes([]);
+        .then(res => res.json())
+        .then(json => {
+            setAthletes(json.content);
+            setTotalPages(json.totalPages);
+        }).catch(err => {
+            console.error('Error fetching athletes overview:', err);
+            setAthletes([]);     
             setTotalPages(0);
         });
     }, [athletesByPage]);
     
     useEffect(() => {
+        setAthleteDetailsMap({});
         if (activeCountry >= 0) {
             showByCountry(activeCountry, 0)
         }
@@ -69,17 +61,12 @@ function MainPage() {
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             return res.json();
         })
-        .then((fullAthlete: Athlete & { results?: Results[]; points?: Points[] }) => {
+        .then((fullAthlete: Athlete) => {
             setAthleteDetailsMap((prev) => ({
                 ...prev,
                 [visibleDetailsId]: fullAthlete,
             }));
         })
-        .catch((err) => {
-            console.error(
-                `Failed to fetch full details for athlete ${visibleDetailsId}:`, err
-            );
-        });
     }, [visibleDetailsId, athleteDetailsMap]);
             
     function updatePage(newPage: number) {

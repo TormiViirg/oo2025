@@ -13,4 +13,8 @@ import java.util.Optional;
 public interface AthleteRepository extends JpaRepository<Athlete, Long> {
 
     Page<Athlete> findByCountry_CountryId(Long countryId, Pageable pageable);
+
+    @Query("SELECT a FROM Athlete a WHERE a.athleteId = :id")
+    Optional<Athlete> findByIdWithCountry(@Param("id") Long id);
+
 }
