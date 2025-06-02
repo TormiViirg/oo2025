@@ -3,8 +3,10 @@ import type { Athlete } from "../models/Athletes";
 import { useParams } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import type { Country } from "../models/Country";
+import { useTranslation } from 'react-i18next';
 
 function EditAthlete() {
+    const { t } = useTranslation();
 
     const { athleteId } = useParams<{ athleteId: string }>();
 
@@ -64,12 +66,12 @@ function EditAthlete() {
             setMetersJavelin(json.metersJavelin);
             setSecondsThousandFiveHundredMeterRun(json.secondsThousandFiveHundredMeterRun);
 
-            toast.success("Athlete data loaded");
+            toast.success(t("toast.athleteDataLoaded"));
         })
         .catch((err) => {
-            toast.error("Error loading athlete: " + err.message);
+            toast.error(t("toast.errorLoadingAthlete", { message: err.message }));
         })
-    }, [athleteId]);
+    }, [athleteId, t]);
 
     useEffect(() => {
         reloadAthlete();
@@ -111,7 +113,7 @@ function EditAthlete() {
                 toast.error(json.message);
             } else {
                 reloadAthlete();
-                toast.success("Athlete and results updated, points recalculated");
+                toast.success(t("toast.athleteUpdatedWithPoints"));
             };
         });
     };
@@ -122,22 +124,22 @@ function EditAthlete() {
 
     return (
         <div>
-            <h2>Edit Athlete</h2>
-            <label>Name</label> <br />
+            <h2>{t("editAthlete.title")}</h2>
+            <label>{t("label.name")}</label> <br />
                 <input 
                     value={name} 
                     onChange={(e) => setName(e.target.value)} 
                     type="text" 
                 /> <br />
 
-                <label>Age at Time of Competition</label> <br />
+                <label>{t("label.age")}</label> <br />
                 <input
                     value={age} 
                     type="number"
                     onChange={(e) => setAge(Number(e.target.value))}
                 /> <br />
 
-                <label>Latitude of BirthPlace</label> <br />
+                <label>{t("label.latitudeBirthPlace")}</label> <br />
                 <input 
                     value={latitudeBirthPlace} 
                     onChange={(e) => setLatitudeBirthPlace(Number(e.target.value))}
@@ -145,7 +147,7 @@ function EditAthlete() {
                     step="any"
                 /> <br />
 
-                <label>Longitude of BirthPlace</label> <br />
+                <label>{t("label.longitudeBirthPlace")}</label> <br />
                 <input 
                     value={longitudeBirthPlace} 
                     onChange={(e) => setLongitudeBirthPlace(Number(e.target.value))}
@@ -153,7 +155,7 @@ function EditAthlete() {
                     step="any"
                 /> <br />
 
-                <label>Country</label> <br />
+                <label>{t("label.country")}</label> <br />
                     <select 
                         value={selectedCountryId} 
                         onChange={(e) => setSelectedCountryId(Number(e.target.value))}
@@ -166,8 +168,8 @@ function EditAthlete() {
                     </select>
                     <br />
 
-                <label>ENTER RESULTS</label> <br />
-                    <label>hundredMeterRun</label> <br />
+                <label>{t("label.enterResults")}</label> <br />
+                    <label>{t("label.hundredMeterRun")}</label> <br />
                     <input
                         value={secondsHundredMeterRun} 
                         type="number"
@@ -175,7 +177,7 @@ function EditAthlete() {
                         step="any"
                     /> <br />
 
-                    <label>longJump</label> <br />
+                    <label>{t("label.longJump")}</label> <br />
                     <input
                         value={metersLongJump} 
                         type="number"
@@ -183,7 +185,7 @@ function EditAthlete() {
                         step="any"
                     /> <br />
 
-                    <label>shotPut</label> <br />
+                    <label>{t("label.shotPut")}</label> <br />
                     <input
                         value={metersShotPut} 
                         type="number"
@@ -191,7 +193,7 @@ function EditAthlete() {
                         step="any"
                     /> <br />
 
-                    <label>highJump</label> <br />
+                    <label>{t("label.highJump")}</label> <br />
                     <input
                         value={metersHighJump} 
                         type="number"
@@ -199,7 +201,7 @@ function EditAthlete() {
                         step="any"
                     /> <br />
 
-                    <label>fourHundredMeterRun</label> <br />
+                    <label>{t("label.fourHundredMeterRun")}</label> <br />
                     <input
                         value={secondsFourHundredMeterRun} 
                         type="number"
@@ -207,7 +209,7 @@ function EditAthlete() {
                         step="any"
                     /> <br />
 
-                    <label>hundredTenMeterHurdle</label> <br />
+                    <label>{t("label.hundredTenMeterHurdle")}</label> <br />
                     <input
                         value={secondsHundredTenMeterHurdle} 
                         type="number"
@@ -215,7 +217,7 @@ function EditAthlete() {
                         step="any"
                     /> <br />
 
-                    <label>discusThrow</label> <br />
+                    <label>{t("label.discusThrow")}</label> <br />
                     <input
                         value={metersDiscusThrow} 
                         type="number"
@@ -223,7 +225,7 @@ function EditAthlete() {
                         step="any"
                     /> <br />
 
-                    <label>poleVault</label> <br />
+                    <label>{t("label.poleVault")}</label> <br />
                     <input
                         value={metersPoleVault} 
                         type="number"
@@ -231,7 +233,7 @@ function EditAthlete() {
                         step="any"
                     /> <br />
 
-                    <label>javelin</label> <br />
+                    <label>{t("label.javelin")}</label> <br />
                     <input
                         value={metersJavelin} 
                         type="number"
@@ -239,7 +241,7 @@ function EditAthlete() {
                         step="any"
                     /> <br />
 
-                    <label>thousandFiveHundredMeterRun</label> <br />
+                    <label>{t("label.thousandFiveHundredMeterRun")}</label> <br />
                     <input
                         value={secondsThousandFiveHundredMeterRun} 
                         type="number"
@@ -249,7 +251,7 @@ function EditAthlete() {
                 
             
             <button onClick={editAthlete}>
-                Save Athlete
+                {t("button.saveAthlete")}
             </button>
             <ToastContainer />
         </div>

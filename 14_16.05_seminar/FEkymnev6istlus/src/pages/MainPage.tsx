@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 import AthleteDetails from '../components/AthleteDetails';
 import type { Athlete } from '../models/Athletes';
 import type { Country } from '../models/Country';
-
-//import '../components/MainPage.css';
+import { useTranslation } from 'react-i18next';
 
 function MainPage() {
-    
+    const { t } = useTranslation();
+
     const [athletes, setAthletes] = useState<Athlete[]>([]);
     const [countryList, setCountryList] = useState<Country[]>([]);
 
@@ -76,14 +76,14 @@ function MainPage() {
     return (
         <div>
             <div>
-                <label> Select Country: </label>
+                <label>{t('selectCountry')}</label>
                 <select 
                     id="country-dropdown"
                     value={activeCountry}
                     onChange={e => showByCountry(Number(e.target.value), 0)}
                 >
                     <option value = {-1} disabled>
-                        -- Choose a Country --
+                        {t('chooseCountryPlaceholder')}
                     </option>
                     {countryList.map(country => (
                         <option key = {country.countryId} value={country.countryId}>
@@ -111,7 +111,7 @@ function MainPage() {
                             />
                             {athlete.athleteId > 0 && (
                                 <Link to = {`/admin/addAthleteResults/${athlete.athleteId}`} >
-                                    <button>Add results</button>
+                                    <button>{t('addResults')}</button>
                                 </Link>
                             )}
                         </div>
@@ -121,13 +121,13 @@ function MainPage() {
 
             <div>
                 <button disabled = { page === 0 } onClick={() => updatePage( page - 1 )}>
-                    Previous 
+                    {t('previous')} 
                 </button>
 
                 <span>{page + 1}</span>
 
                 <button disabled={page >= totalPages - 1} onClick={() => updatePage(page + 1)}>
-                    Next 
+                    {t('next')}
                 </button>
             </div>
             

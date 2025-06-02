@@ -2,10 +2,11 @@ import { useEffect, useRef, useState } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import type { Athlete } from '../models/Athletes';
 import type { Country } from '../models/Country';
-
+import { useTranslation } from 'react-i18next';
 
 function ManageAthletes() {
-    
+    const { t } = useTranslation();
+
     const nameRef = useRef<HTMLInputElement>(null);
     const ageRef = useRef<HTMLInputElement>(null);
     const latRef = useRef<HTMLInputElement>(null);
@@ -64,7 +65,7 @@ function ManageAthletes() {
         .then(json => {
             if (json.message === undefined && json.timestamp === undefined && json.status === undefined) {
                 setAthlete(json);
-                toast.success("Athlete sucessfully added");
+                toast.success(t("Athlete sucessfully added"));
             } else {
                 toast.error(json.message);
             }
@@ -82,21 +83,21 @@ function ManageAthletes() {
                     alignItems: "center"
                 }}
             >
-                <label>Name</label> <br />
+                <label>{t('manageAthletes.fields.name')}</label> <br />
                 <input 
                     ref={nameRef} 
                     defaultValue={athlete?.athleteName} 
                     type="text" 
                 /> <br />
 
-                <label>Age at Time of Competition</label> <br />
+                <label>{t('manageAthletes.fields.ageAtCompetition')}</label> <br />
                 <input
                     ref={ageRef} 
                     type="number"
                     defaultValue={athlete?.age}
                 /> <br />
 
-                <label>Latitude of BirthPlace</label> <br />
+                <label>{t('manageAthletes.fields.latitudeBirthPlace')}</label> <br />
                 <input 
                     ref={latRef} 
                     defaultValue = {athlete?.latitudeBirthPlace} 
@@ -104,7 +105,7 @@ function ManageAthletes() {
                     step="any"
                 /> <br />
 
-                <label>Longitude of BirthPlace</label> <br />
+                <label>{t('manageAthletes.fields.longitudeBirthPlace')}</label> <br />
                 <input 
                     ref={lonRef} 
                     defaultValue = {athlete?.longitudeBirthPlace} 
@@ -112,7 +113,7 @@ function ManageAthletes() {
                     step="any"
                 /> <br />
 
-                <label>Country</label> <br />
+                <label>{t('manageAthletes.fields.country')}</label> <br />
                 <select 
                     ref={countryRef} 
                     defaultValue={athlete?.country.countryName}
@@ -125,8 +126,8 @@ function ManageAthletes() {
                 </select>
                 <br />
                 
-                <label>Results</label> <br />
-                <label>hundredMeterRun</label> <br />
+                <label>{t('manageAthletes.sections.results')}</label> <br />
+                <label>{t('manageAthletes.fields.hundredMeterRun')}</label> <br />
                 <input
                     ref={secondsHundredMeterRunRef} 
                     type="number"
@@ -134,7 +135,7 @@ function ManageAthletes() {
                     step="any"
                 /> <br />
 
-                <label>longJump</label> <br />
+                <label>{t('manageAthletes.fields.longJump')}</label> <br />
                 <input
                     ref={metersLongJumpRef} 
                     type="number"
@@ -142,7 +143,7 @@ function ManageAthletes() {
                     step="any"
                 /> <br />
 
-                <label>shotPut</label> <br />
+                <label>{t('manageAthletes.fields.shotPut')}</label> <br />
                 <input
                     ref={metersShotPutRef} 
                     type="number"
@@ -150,7 +151,7 @@ function ManageAthletes() {
                     step="any"
                 /> <br />
 
-                    <label>highJump</label> <br />
+                <label>{t('manageAthletes.fields.highJump')}</label> <br />
                 <input
                     ref={metersHighJumpRef} 
                     type="number"
@@ -158,7 +159,7 @@ function ManageAthletes() {
                     step="any"
                 /> <br />
 
-                <label>fourHundredMeterRun</label> <br />
+                <label>{t('manageAthletes.fields.fourHundredMeterRun')}</label> <br />
                 <input
                     ref={secondsFourHundredMeterRunRef} 
                     type="number"
@@ -166,7 +167,7 @@ function ManageAthletes() {
                     step="any"
                 /> <br />
 
-                <label>hundredTenMeterHurdle</label> <br />
+                <label>{t('manageAthletes.fields.hundredTenMeterHurdle')}</label> <br />
                 <input
                     ref={secondsHundredTenMeterHurdleRef} 
                     type="number"
@@ -174,7 +175,7 @@ function ManageAthletes() {
                     step="any"
                 /> <br />
 
-                <label>discusThrow</label> <br />
+                <label>{t('manageAthletes.fields.discusThrow')}</label> <br />
                 <input
                     ref={metersDiscusThrowRef} 
                     type="number"
@@ -182,7 +183,7 @@ function ManageAthletes() {
                     step="any"
                 /> <br />
 
-                <label>poleVault</label> <br />
+                <label>{t('manageAthletes.fields.poleVault')}</label> <br />
                 <input
                     ref={metersPoleVaultRef} 
                     type="number"
@@ -190,7 +191,7 @@ function ManageAthletes() {
                     step="any"
                 /> <br />
 
-                <label>javelin</label> <br />
+                <label>{t('manageAthletes.fields.javelin')}</label> <br />
                 <input
                     ref={metersJavelinRef} 
                     type="number"
@@ -198,7 +199,7 @@ function ManageAthletes() {
                     step="any"
                 /> <br />
 
-                <label>thousandFiveHundredMeterRun</label> <br />
+                <label>{t('manageAthletes.fields.thousandFiveHundredMeterRun')}</label> <br />
                 <input
                     ref={secondsThousandFiveHundredMeterRunRef} 
                     type="number"
@@ -207,7 +208,7 @@ function ManageAthletes() {
                 /> <br />
 
 
-                <button>Add athlete</button>
+                <button>{t('manageAthletes.buttons.addAthlete')}</button>
             </form>
             <ToastContainer/>
         </div>

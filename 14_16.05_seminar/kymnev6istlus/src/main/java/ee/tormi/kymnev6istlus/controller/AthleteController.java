@@ -12,9 +12,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @Getter
@@ -37,6 +37,21 @@ public class AthleteController {
         Pageable pageable = PageRequest.of(page, size, Sort.by("athleteName").ascending());
         Page<Athlete> athletesPage = athleteRepository.findByCountry_CountryId(countryId, pageable);
         return ResponseEntity.ok(athletesPage);
+    }
+
+    @GetMapping("/athletes/locations")
+    public ResponseEntity<List<Map<String, Object>>> getAthletesLocations() {
+        List<Athlete> allAthletes = athleteRepository.findAll();
+
+        List<Map<String, Object>> result = allAthletes.stream()
+                .map(athlete -> Map.<String, Object>of(
+                        "athleteId", (Object) athlete.getAthleteId(),
+                        "name",      (Object) athlete.getAthleteName(),
+                        "latitude",  (Object) athlete.getLatitudeBirthPlace(),
+                        "longitude", (Object) athlete.getLongitudeBirthPlace()
+                ))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(result);
     }
 
     // initialization of athlete

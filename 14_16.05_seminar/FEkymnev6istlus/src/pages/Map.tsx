@@ -1,7 +1,26 @@
+import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import { ToastContainer } from 'react-toastify';
+
+type AthleteLocation = {
+  athleteId: number;
+  name: string;
+  latitude: number;
+  longitude: number;
+};
 
 function Map() {
+  const [locations, setLocations] = useState<AthleteLocation[]>([]);
 
+  useEffect(() => {
+    fetch("http://localhost:8080/athletes/locations")
+      .then((res) => res.json())
+      .then((json: AthleteLocation[]) => {
+        setLocations(json);
+      });
+  }, []);
+
+    
   return (
     <div>
       
@@ -16,23 +35,17 @@ function Map() {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <Marker position={[59.436, 24.755]}>
-          <Popup>
-            Viru keskus. <br /> Avatud 9.00-22.00
-          </Popup>
-        </Marker>
-        <Marker position={[59.421, 24.793]}>
-          <Popup>
-            Ülemiste keskus. <br /> Avatud 9.00-22.00
-          </Popup>
-        </Marker>
-        <Marker position={[59.427, 24.723]}>
-          <Popup>
-            Kristiine keskus. <br /> Avatud 9.00-22.00
-          </Popup>
-        </Marker>
+        {locations.map((athlete) => (
+          <Marker 
+            key = {athlete.athleteId} 
+            position={[athlete.latitude, athlete.longitude]}>
+              <Popup>
+                {athlete.name}
+              </Popup>
+            </Marker>
+        ))}
       </MapContainer>
-
+      <ToastContainer/>
     </div>
   )
 }

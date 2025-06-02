@@ -41,7 +41,7 @@ public class DecathlonLogic {
         }
 
         double score(Double perf) {
-            if (perf == null || perf <= 0.0) {
+            if (perf == null || perf <= 0.1) {
                 return 0.0;
             }
             double x;

@@ -1,4 +1,5 @@
 import type { Athlete } from '../models/Athletes';
+import { useTranslation } from 'react-i18next';
 
 type Details = {
   athlete: Athlete;
@@ -6,51 +7,47 @@ type Details = {
   onToggle: () => void;
 };
 
-export default function AthleteDetails({ 
-    athlete, 
-    isVisible, 
-    onToggle,
-    }: Details) {
+export default function AthleteDetails({ athlete, isVisible, onToggle,}: Details) {
 
+    const { t } = useTranslation();
 
     return (
         <div>
             <div>{athlete.athleteName}</div>
             <button onClick={onToggle}>
-                {isVisible ? 'Hide details' : 'Show details'}
+                {isVisible ? t('athleteDetails.hideDetails') : t('athleteDetails.showDetails')}
             </button>
 
             {isVisible && (
                 <div>
-                    <label> Age: </label>
+                    <label> {t('athleteDetails.label.age')} </label>
                     {athlete.age ? (
                         <div>{athlete.age}</div>
                     ) : (
-                        <div>Loading birthdate…</div>
+                        <div>{t('athleteDetails.loadingBirthdate')}</div>
                     )}
                     
-                    <label> Country: </label>
+                    <label>{t('athleteDetails.label.country')}</label>
                     {athlete.country ? (
                         <div>{athlete.country?.countryName}</div>
                         ) : (
-                        <div>Loading country…</div>
+                        <div>{t('athleteDetails.loadingCountry')}</div>
                     )}
 
-                    <h3>Results</h3>
+                    <h3>{t('athleteDetails.heading.results')}</h3>
                     <table>
                         <thead>
                             <tr>
-                                <th>100m Run Seconds</th>
-                                <th>Long Jump Meters</th>
-                                <th>Shot Put Meters</th>
-                                <th>High Jump Meters</th>
-                                <th>400m Run Seconds</th>
-                                <th>110m Hurdles Seconds</th>
-                                <th>Discus Throw Meters</th>
-                                <th>Pole Vault Meters</th>
-                                <th>Javelin Meters</th>
-                                <th>1500m Run Seconds</th>
-                                
+                                <th>{t('athleteDetails.table.results.100mRunSeconds')}</th>
+                                <th>{t('athleteDetails.table.results.longJumpMeters')}</th>
+                                <th>{t('athleteDetails.table.results.shotPutMeters')}</th>
+                                <th>{t('athleteDetails.table.results.highJumpMeters')}</th>
+                                <th>{t('athleteDetails.table.results.400mRunSeconds')}</th>
+                                <th>{t('athleteDetails.table.results.110mHurdlesSeconds')}</th>
+                                <th>{t('athleteDetails.table.results.discusThrowMeters')}</th>
+                                <th>{t('athleteDetails.table.results.poleVaultMeters')}</th>
+                                <th>{t('athleteDetails.table.results.javelinMeters')}</th>
+                                <th>{t('athleteDetails.table.results.1500mRunSeconds')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -74,17 +71,17 @@ export default function AthleteDetails({
                     <table>
                         <thead>
                             <tr>
-                                <th>100m Run Points</th>
-                                <th>Long Jump Points</th>
-                                <th>Shot Put Points</th>
-                                <th>High Jump Points</th>
-                                <th>400m Run Points</th>
-                                <th>110m Hurdles Points</th>
-                                <th>Discus Throw Points</th>
-                                <th>Pole Vault Points</th>
-                                <th>Javelin Points</th>
-                                <th>1500m Run Points</th>
-                                <th>Total Score</th>
+                                <th>{t('athleteDetails.table.points.100mRunPoints')}</th>
+                                <th>{t('athleteDetails.table.points.longJumpPoints')}</th>
+                                <th>{t('athleteDetails.table.points.shotPutPoints')}</th>
+                                <th>{t('athleteDetails.table.points.highJumpPoints')}</th>
+                                <th>{t('athleteDetails.table.points.400mRunPoints')}</th>
+                                <th>{t('athleteDetails.table.points.110mHurdlesPoints')}</th>
+                                <th>{t('athleteDetails.table.points.discusThrowPoints')}</th>
+                                <th>{t('athleteDetails.table.points.poleVaultPoints')}</th>
+                                <th>{t('athleteDetails.table.points.javelinPoints')}</th>
+                                <th>{t('athleteDetails.table.points.1500mRunPoints')}</th>
+                                <th>{t('athleteDetails.table.points.totalScore')}</th>
                             </tr>
                         </thead>
                         <tbody>

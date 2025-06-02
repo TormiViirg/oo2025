@@ -18,7 +18,6 @@ function App() {
         <Route path="/admin/addAthlete" element={ <ManageAthletes /> } />
         <Route path="/admin/addAthleteResults/:athleteId" element={ <EditAthleteDetails /> } />
 
-        
         <Route path="/*" element={ <div>Page not found</div> } />
       </Routes>
     </>
